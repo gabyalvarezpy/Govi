@@ -5,173 +5,256 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GOVI — Tu mundo. Tu gente.</title>
 <style>
-:root {
-  --site-primary: #C99A32;
-  --site-on-primary: #080808;
-  --site-secondary: #E8C66A;
-  --site-on-secondary: #080808;
-  --site-background: #101010;
-  --site-on-background: #F5F0E5;
-  --site-font-body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --site-font-heading: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --site-heading-scale: 1;
-  --site-spacing-scale: 1;
-  --site-radius-scale: 1;
-  --site-decoration-opacity: 1;
-  color-scheme: light dark;
-}
-/* GOVI: identidad premium en negro y dorado */
-#app { background:#101010; color:#F5F0E5; }
-.topbar { background:#080808; color:#F5D98A; border-bottom:1px solid #9A742A; box-shadow:0 5px 24px #0008; }
-.brand-mark { background:linear-gradient(145deg,#F8DF91,#B77B18); color:#080808; border:1px solid #FFE8A6; border-radius:50%; box-shadow:0 0 18px #D6A63B55; }
-.panel { background:#191919; border-color:#393020; color:#F5F0E5; }
-.nav-item.active,.nav-item:hover { background:#C99A3220; color:#E8C66A; }
-.side-note { background:#211B10; color:#E8D6A7; }
-.eyebrow,.card-title a { color:#D6AD50; }
-.story-ring { background:linear-gradient(140deg,#F3D47C,#9C6B1B); }
-.story.add .story-ring span { color:#C99A32; }
-.compose-top input { background:#26231D; }
-.compose-actions { border-color:#393020; }
-.post-art { background:linear-gradient(130deg,#17130B,#76551B 53%,#D0A642); }
-.post-art.photo { background:linear-gradient(125deg,#3A2B14,#B58A38 48%,#211A10); }
-.post-buttons button.liked { color:#E8C66A; }
-.earn-card { background:linear-gradient(140deg,#17130B,#5B4217); }
-.earn-card .eyebrow { color:#F0D58D; }
-.earn-card .primary-btn { background:#E8C66A; color:#15110A; }
-.primary-btn { background:#D0A642; color:#100D07; }
-.follow { border-color:#9D7A35; color:#E8C66A; }
-.toast { background:#2B2110; color:#F8E8BD; }
-body { background:#080808; color:#F5F0E5; }
-@media(max-width:720px){.sidebar{background:#111;border-color:#393020}.nav-item{color:#C9BEA3}}
-* { box-sizing: border-box; }
-body { margin: 0; font-family: var(--site-font-body); background: light-dark(#F3F4FA,#10111A); color: light-dark(#171827,#F2F2FA); }
-button, input, textarea { font: inherit; }
-button { cursor: pointer; }
-#app { min-height: 100vh; width: 100%; border-radius: 0; background-color: var(--site-background); color: var(--site-on-background); }
-.topbar { height: 70px; display:flex; align-items:center; justify-content:space-between; gap:18px; padding: 0 clamp(16px,4vw,54px); background: var(--site-primary); color:var(--site-on-primary); position:sticky; top:0; z-index:10; box-shadow:0 5px 22px #21145a22; }
-.brand { display:flex; align-items:center; gap:10px; font-family:var(--site-font-heading); font-weight:900; letter-spacing:-1.2px; font-size:calc(25px * var(--site-heading-scale)); }
-.brand-mark { width:34px;height:34px;border-radius:12px;background:var(--site-secondary);color:var(--site-on-secondary);display:grid;place-items:center;font-weight:950; }
-.search { width:min(420px,38vw); position:relative; }
-.search input { width:100%; border:1px solid #ffffff55; background:#ffffff20; color:white; border-radius:30px; padding:11px 16px 11px 40px; outline:none; }
-.search input::placeholder {color:#ffffffbb}.search span {position:absolute;left:14px;top:9px;font-size:18px}
-.top-actions {display:flex;align-items:center;gap:10px}.top-actions button {border:0;background:#ffffff20;color:white;border-radius:13px;padding:10px 13px;font-weight:700}.avatar {width:35px;height:35px;border-radius:50%;display:grid;place-items:center;background:#F9C46A;color:#422B10;font-weight:900;border:2px solid #ffffff99}
-.layout {max-width:1440px;margin:auto;padding:26px clamp(14px,3vw,34px);display:grid;grid-template-columns:220px minmax(0,1fr) 290px;gap:24px;align-items:start}
-.panel {background:light-dark(#FFFFFF,#1B1D2A);border:1px solid light-dark(#E7E8F0,#303244);border-radius:calc(20px * var(--site-radius-scale));box-shadow:0 8px 28px #22223a0a;}
-.sidebar {padding:16px;position:sticky;top:92px}.nav-item {display:flex;align-items:center;gap:12px;padding:12px 13px;margin:3px 0;border-radius:13px;color:light-dark(#4C4D60,#C4C5D2);font-weight:650;font-size:14px;cursor:pointer}.nav-item.active,.nav-item:hover {background:color-mix(in srgb,var(--site-primary) 12%,transparent);color:var(--site-primary)}.nav-icon{font-size:18px;width:22px;text-align:center}.side-label{font-size:10px;letter-spacing:1.5px;color:#9293A5;font-weight:800;margin:22px 12px 8px}.side-note {padding:15px;margin-top:18px;background:light-dark(#F4F1FF,#27223C);border-radius:15px;font-size:12px;color:light-dark(#51447C,#D5C9FF);line-height:1.5}
-.content {min-width:0}.welcome {display:flex;justify-content:space-between;align-items:flex-end;margin:3px 0 19px;gap:12px}.eyebrow {font-size:11px;letter-spacing:1.6px;color:var(--site-primary);font-weight:850;text-transform:uppercase}.welcome h1 {font-size:calc(27px * var(--site-heading-scale));letter-spacing:-1.2px;margin:5px 0 0}.welcome p {margin:5px 0 0;color:light-dark(#77788B,#A8A9B9);font-size:13px}.live-pill {background:#FFE9EC;color:#C22B4B;border-radius:30px;padding:8px 12px;font-size:11px;font-weight:850;white-space:nowrap}
-.stories {display:flex;gap:13px;overflow:auto;padding:3px 1px 17px}.story {flex:0 0 68px;text-align:center;font-size:11px;color:light-dark(#626376,#C3C4D1);font-weight:650}.story-ring {width:60px;height:60px;margin:0 auto 6px;padding:3px;border-radius:50%;background:linear-gradient(140deg,var(--site-primary),var(--site-secondary));}.story-ring span {display:grid;place-items:center;width:100%;height:100%;border:3px solid light-dark(#fff,#1B1D2A);border-radius:50%;background:#F0D6C2;font-size:23px}.story.add .story-ring {background:light-dark(#E8E7F2,#3A3B4B)}.story.add .story-ring span{background:light-dark(#F6F5FB,#292B3A);color:var(--site-primary);font-size:27px}
-.composer {padding:16px;margin-bottom:17px}.compose-top {display:flex;gap:11px;align-items:center}.compose-top .avatar{flex:0 0 39px;height:39px}.compose-top input {flex:1;min-width:0;border:0;background:light-dark(#F4F4F9,#292B3A);padding:13px 16px;border-radius:25px;outline:none;color:inherit}.compose-actions {display:flex;justify-content:space-between;align-items:center;border-top:1px solid light-dark(#ECECF2,#303244);margin-top:14px;padding-top:12px;gap:7px}.compose-actions button {border:0;background:transparent;color:light-dark(#67687A,#C5C6D1);font-size:12px;font-weight:700;padding:8px 9px;border-radius:9px}.compose-actions button:hover{background:light-dark(#F1F0FA,#292B3A)}.post {padding:17px;margin-bottom:17px}.post-head {display:flex;align-items:center;gap:10px}.post-head .avatar{width:42px;height:42px;flex:0 0 42px}.post-author{font-size:13px;font-weight:850}.post-meta{font-size:11px;color:#9293A5;margin-top:3px}.more{margin-left:auto;border:0;background:transparent;color:#999;font-size:21px}.post-text{font-size:13px;line-height:1.65;margin:14px 0;color:light-dark(#444558,#D7D8E3)}.post-art {height:250px;border-radius:15px;display:flex;align-items:flex-end;padding:20px;overflow:hidden;position:relative;background:linear-gradient(130deg,#31245F,#6D4AFF 53%,#12B8A6);color:white}.post-art::before,.post-art::after{content:"";position:absolute;border:1px solid #ffffff44;border-radius:50%;width:310px;height:310px;right:-40px;top:-160px;box-shadow:0 0 0 35px #ffffff0d,0 0 0 75px #ffffff0a}.post-art::after{width:180px;height:180px;right:100px;top:100px}.art-caption{position:relative;z-index:1}.art-caption small{letter-spacing:2px;font-size:10px;font-weight:800}.art-caption strong{display:block;font-size:30px;letter-spacing:-1px;margin-top:5px}.post-art.photo{background:linear-gradient(125deg,#B85B44,#F0B36C 48%,#542E58)}.post-art.photo::before{right:-10px;top:-100px;width:250px;height:250px}.post-stats{display:flex;justify-content:space-between;color:#9293A5;font-size:11px;padding:12px 2px 10px;border-bottom:1px solid light-dark(#ECECF2,#303244)}.post-buttons{display:flex;justify-content:space-around;padding-top:8px}.post-buttons button{border:0;background:transparent;color:light-dark(#77788B,#C1C2D0);font-weight:700;font-size:12px;padding:8px 12px;border-radius:9px}.post-buttons button.liked{color:#E34E75}.post-buttons button:hover{background:light-dark(#F4F3FA,#292B3A)}.comments{display:none;padding-top:10px}.comments.open{display:block}.comments input{width:100%;border:1px solid light-dark(#E2E2EC,#3A3C4D);border-radius:20px;padding:10px 13px;background:transparent;color:inherit}
-.rightcol {position:sticky;top:92px;display:grid;gap:16px}.right-card{padding:17px}.card-title{font-size:14px;font-weight:850;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}.card-title a{font-size:11px;color:var(--site-primary);cursor:pointer}.live-row{display:flex;gap:10px;align-items:center;margin:12px 0}.live-thumb{width:54px;height:48px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(135deg,#D84B69,#6D4AFF);color:white;font-size:20px}.live-info{min-width:0;flex:1}.live-info b{font-size:12px;display:block}.live-info small{font-size:10px;color:#9293A5}.viewers{font-size:10px;color:#E34E65;font-weight:800}.creator-row{display:flex;align-items:center;gap:9px;margin:12px 0}.creator-row .avatar{width:34px;height:34px}.creator-row b{font-size:12px;display:block}.creator-row small{font-size:10px;color:#9293A5}.follow{margin-left:auto;border:1px solid #D9D4FF;color:var(--site-primary);background:transparent;border-radius:9px;padding:6px 9px;font-size:10px;font-weight:800}.earn-card{background:linear-gradient(140deg,#262047,#44318B);color:white;border:0;overflow:hidden;position:relative}.earn-card::after{content:"✦";position:absolute;right:15px;top:6px;font-size:90px;color:#ffffff0c}.earn-card .eyebrow{color:#BEB0FF}.earn-card h3{font-size:19px;margin:8px 0}.earn-card p{font-size:11px;line-height:1.5;color:#D2CDED}.progress{height:7px;background:#ffffff30;border-radius:9px;overflow:hidden;margin:14px 0 7px}.progress span{display:block;height:100%;width:64%;background:var(--site-secondary);border-radius:9px}.earn-foot{display:flex;justify-content:space-between;font-size:10px;color:#D4CFF0}.primary-btn{background:var(--site-primary);color:white;border:0;border-radius:11px;padding:11px 14px;font-weight:800;font-size:12px}.earn-card .primary-btn{background:#fff;color:#49358E;margin-top:15px}
-.overlay{display:none;position:fixed;inset:0;background:#11132299;z-index:30;align-items:center;justify-content:center;padding:18px}.overlay.show{display:flex}.modal{width:min(500px,100%);background:light-dark(#fff,#1B1D2A);color:light-dark(#171827,#F2F2FA);border-radius:22px;padding:22px;box-shadow:0 25px 80px #0004}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}.modal-head h2{margin:0;font-size:20px}.close{border:0;background:transparent;color:inherit;font-size:23px}.modal textarea{width:100%;min-height:110px;resize:vertical;border:1px solid light-dark(#E3E3EC,#3A3C4D);border-radius:13px;padding:13px;background:transparent;color:inherit;outline:none}.modal-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:14px}.gift-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.gift{border:1px solid light-dark(#E7E6EF,#393B4D);background:light-dark(#FAFAFD,#242637);border-radius:14px;padding:14px 8px;text-align:center;color:inherit}.gift span{font-size:26px;display:block}.gift b{font-size:12px;display:block;margin-top:5px}.gift small{font-size:10px;color:#9293A5}.auth-fields{display:grid;gap:11px}.auth-fields input{width:100%;border:1px solid light-dark(#E3E3EC,#3A3C4D);border-radius:12px;padding:13px;background:transparent;color:inherit;outline:none}.auth-switch{border:0;background:transparent;color:var(--site-primary);font-weight:800;padding:10px 0}.demo-note{font-size:11px;color:#9293A5;line-height:1.5;margin-top:15px}.toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,20px);background:#24213B;color:white;padding:12px 18px;border-radius:30px;font-size:12px;font-weight:700;opacity:0;transition:.25s;z-index:50;pointer-events:none}.toast.show{opacity:1;transform:translate(-50%,0)}
-@media(max-width:1100px){.layout{grid-template-columns:190px minmax(0,1fr)}.rightcol{display:none}}
-@media(max-width:720px){.topbar{height:60px;padding:0 14px}.search{display:none}.top-actions button{padding:8px 10px}.layout{display:block;padding:17px 12px 85px}.sidebar{position:fixed;z-index:15;bottom:0;top:auto;left:0;right:0;border-radius:0;border:0;border-top:1px solid light-dark(#E5E5EF,#333547);padding:7px 4px calc(7px + env(safe-area-inset-bottom));display:flex;justify-content:space-around;background:light-dark(#fff,#1B1D2A)}.nav-item{display:flex;flex-direction:column;gap:3px;padding:5px 7px;margin:0;font-size:9px}.nav-icon{font-size:18px}.side-label,.side-note{display:none}.welcome h1{font-size:23px}.post-art{height:210px}.post-art strong{font-size:25px}.compose-actions button{font-size:10px;padding:7px 4px}.live-pill{font-size:9px}}
+:root{--gold:#C99A32;--gold2:#E8C66A;--bg:#101010;--panel:#191919;--text:#F5F0E5;--muted:#aaa18d;--line:#393020}
+*{box-sizing:border-box}body{margin:0;background:#080808;color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+button,input,textarea{font:inherit}button{cursor:pointer}
+.topbar{height:66px;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:0 clamp(14px,4vw,48px);background:#080808;border-bottom:1px solid #9A742A;position:sticky;top:0;z-index:10}
+.brand{display:flex;align-items:center;gap:10px;font-size:25px;font-weight:900;letter-spacing:-1px}.brand-mark{width:35px;height:35px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#F8DF91,#B77B18);color:#080808}
+.search{width:min(420px,40vw)}.search input{width:100%;border:1px solid #ffffff33;background:#ffffff12;color:white;border-radius:25px;padding:11px 15px;outline:none}
+.top-actions{display:flex;align-items:center;gap:9px}.top-actions button{border:0;background:#ffffff18;color:white;border-radius:12px;padding:10px 13px;font-weight:700}
+.avatar{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:#F9C46A;color:#422B10;font-weight:900;border:2px solid #ffffff55}
+.layout{max-width:1400px;margin:auto;padding:24px clamp(12px,3vw,30px);display:grid;grid-template-columns:205px minmax(0,1fr) 270px;gap:22px;align-items:start}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:0 8px 25px #0002}.sidebar{padding:14px;position:sticky;top:86px}
+.nav-item{padding:12px;border-radius:12px;margin:3px 0;color:#c9bea3;font-size:14px;font-weight:700;cursor:pointer}.nav-item.active,.nav-item:hover{background:#C99A3220;color:var(--gold2)}
+.side-note{background:#211b10;color:#e8d6a7;padding:14px;border-radius:13px;font-size:12px;line-height:1.5;margin-top:18px}
+.content{min-width:0}.welcome{display:flex;justify-content:space-between;align-items:center;margin:3px 0 17px;gap:10px}.eyebrow{font-size:10px;letter-spacing:1.5px;color:#D6AD50;font-weight:850}.welcome h1{font-size:25px;margin:5px 0}.welcome p{margin:0;color:var(--muted);font-size:13px}.live-pill{background:#3a1515;color:#ff9292;border-radius:20px;padding:8px 11px;font-size:10px;font-weight:800;white-space:nowrap}
+.stories{display:flex;gap:13px;overflow:auto;padding:4px 0 16px}.story{flex:0 0 64px;text-align:center;font-size:11px;color:#c9bea3}.story-ring{width:58px;height:58px;margin:auto auto 5px;padding:3px;border-radius:50%;background:linear-gradient(140deg,#f3d47c,#9c6b1b)}.story-ring span{display:grid;place-items:center;width:100%;height:100%;border:3px solid var(--panel);border-radius:50%;background:#392d19;font-size:22px}
+.composer{padding:15px;margin-bottom:16px}.compose-top{display:flex;align-items:center;gap:10px}.compose-top input{flex:1;min-width:0;border:0;border-radius:25px;background:#26231d;padding:13px 15px;color:var(--text);outline:none}.compose-actions{display:flex;gap:8px;flex-wrap:wrap;border-top:1px solid var(--line);margin-top:13px;padding-top:11px}.compose-actions button,.post-buttons button{border:0;background:transparent;color:#c9bea3;font-size:12px;font-weight:750;padding:9px 11px;border-radius:9px}.compose-actions button:hover,.post-buttons button:hover{background:#ffffff0d}
+.post{padding:15px;margin-bottom:15px}.post-head{display:flex;align-items:center;gap:10px}.post-head .avatar{flex:0 0 40px}.post-author{font-size:13px;font-weight:850}.post-meta{font-size:11px;color:#9e967f;margin-top:3px}.more{margin-left:auto;background:transparent;border:0;color:#c9bea3;font-size:22px}.post-text{font-size:14px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere;margin:13px 0}.post-media{width:100%;max-height:600px;object-fit:contain;background:#080808;border-radius:13px;display:block}.post-media.video{max-height:520px}.post-stats{display:flex;justify-content:space-between;gap:8px;color:#aaa18d;font-size:11px;padding:11px 2px;border-bottom:1px solid var(--line)}.post-buttons{display:flex;justify-content:space-around;flex-wrap:wrap;padding-top:7px}.post-buttons button.liked{color:#E8C66A}.comments{display:none;padding-top:10px}.comments.open{display:block}.comment-list{display:grid;gap:8px;margin:8px 0}.comment{background:#242019;border-radius:11px;padding:9px 11px;font-size:12px;line-height:1.5}.comment b{color:#E8C66A;margin-right:5px}.comment-form{display:flex;gap:7px}.comment-form input{min-width:0;flex:1;border:1px solid #51452d;border-radius:20px;padding:10px 13px;background:transparent;color:var(--text)}.comment-form button{border:0;border-radius:20px;padding:0 14px;background:var(--gold2);color:#15110a;font-weight:800}
+.rightcol{position:sticky;top:86px;display:grid;gap:15px}.right-card{padding:16px}.card-title{font-size:14px;font-weight:850;margin-bottom:12px}.creator-row{display:flex;align-items:center;gap:9px;margin:12px 0}.creator-row b{font-size:12px;display:block}.creator-row small{font-size:10px;color:#aaa18d}.follow{margin-left:auto;border:1px solid #9d7a35;color:#E8C66A;background:transparent;border-radius:9px;padding:6px 9px;font-size:10px;font-weight:800}
+.overlay{display:none;position:fixed;inset:0;background:#000b;z-index:30;align-items:center;justify-content:center;padding:15px}.overlay.show{display:flex}.modal{width:min(540px,100%);max-height:90vh;overflow:auto;background:#191919;color:var(--text);border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:0 25px 80px #0008}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}.modal-head h2{font-size:19px;margin:0}.close{border:0;background:transparent;color:inherit;font-size:25px}.modal textarea,.auth-fields input{width:100%;border:1px solid #51452d;border-radius:12px;padding:12px;background:#111;color:var(--text);outline:none}.modal textarea{min-height:115px;resize:vertical}.file-label{display:block;border:1px dashed #9d7a35;border-radius:12px;padding:14px;text-align:center;margin-top:12px;color:#E8C66A;font-size:13px;cursor:pointer}.file-label input{display:none}.file-hint{font-size:11px;color:#aaa18d;margin-top:8px;line-height:1.5}.preview{display:none;width:100%;max-height:240px;object-fit:contain;margin-top:10px;border-radius:12px;background:#080808}.modal-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:14px}.primary-btn{background:#E8C66A;color:#15110A;border:0;border-radius:11px;padding:11px 15px;font-weight:850}.secondary-btn{background:#29251d;color:#eee0bd;border:1px solid #51452d;border-radius:11px;padding:10px 14px;font-weight:750}.auth-fields{display:grid;gap:10px}.auth-switch{border:0;background:transparent;color:#E8C66A;font-weight:800;padding:12px 0}.demo-note{font-size:11px;color:#aaa18d;line-height:1.5}.toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,20px);background:#2b2110;color:#f8e8bd;padding:12px 18px;border-radius:30px;font-size:12px;font-weight:750;opacity:0;transition:.25s;z-index:50;pointer-events:none;max-width:90vw;text-align:center}.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:1050px){.layout{grid-template-columns:175px minmax(0,1fr)}.rightcol{display:none}}
+@media(max-width:700px){.topbar{height:58px;padding:0 11px}.brand{font-size:21px}.search{display:none}.top-actions button{padding:8px}.layout{display:block;padding:14px 10px 25px}.sidebar{position:static;display:flex;overflow:auto;margin-bottom:14px;padding:6px;gap:4px}.nav-item{white-space:nowrap;padding:9px;font-size:11px}.side-note{display:none}.welcome h1{font-size:21px}.post{padding:12px}.post-buttons button{padding:8px 6px;font-size:11px}}
 </style>
 </head>
 <body>
-<div id="app">
 <header class="topbar">
   <div class="brand"><div class="brand-mark">G</div>GOVI</div>
-  <div class="search"><span>⌕</span><input id="searchInput" placeholder="Buscar personas, vídeos y temas…"></div>
-  <div class="top-actions"><button onclick="openModal('liveModal')">＋ Crear</button><button aria-label="Notificaciones" onclick="toast('No tienes notificaciones nuevas')">♧</button><button class="avatar" aria-label="Acceder a mi cuenta" onclick="openModal('authModal')">G</button></div>
+  <div class="search"><input id="searchInput" placeholder="Buscar publicaciones…"></div>
+  <div class="top-actions"><button onclick="openModal('postModal')">＋ Crear</button><button onclick="toast('No tienes notificaciones nuevas')">♧</button><button class="avatar" id="accountButton" onclick="openModal('authModal')">G</button></div>
 </header>
 <div class="layout">
   <aside class="sidebar panel">
-    <div class="nav-item active" data-section="Inicio" onclick="setSection(this)"><span class="nav-icon">⌂</span>Inicio</div>
-    <div class="nav-item" data-section="Explorar" onclick="setSection(this)"><span class="nav-icon">⌕</span>Explorar</div>
-    <div class="nav-item" data-section="Vídeos" onclick="setSection(this)"><span class="nav-icon">▷</span>Vídeos</div>
-    <div class="nav-item" data-section="Directos" onclick="setSection(this)"><span class="nav-icon">◉</span>Directos</div>
-    <div class="nav-item" data-section="Mensajes" onclick="setSection(this)"><span class="nav-icon">✉</span>Mensajes</div>
-    <div class="side-label">TU ESPACIO</div>
-    <div class="nav-item" data-section="Mi perfil" onclick="setSection(this)"><span class="nav-icon">♙</span>Mi perfil</div>
-    <div class="nav-item" data-section="Monetización" onclick="showEarnings()"><span class="nav-icon">✧</span>Monetización</div>
-    <div class="nav-item" data-section="Guardados" onclick="setSection(this)"><span class="nav-icon">▤</span>Guardados</div>
+    <div class="nav-item active" onclick="filterSection('Inicio',this)">⌂ Inicio</div>
+    <div class="nav-item" onclick="filterSection('Fotos',this)">▧ Fotos</div>
+    <div class="nav-item" onclick="filterSection('Vídeos',this)">▷ Vídeos</div>
+    <div class="nav-item" onclick="filterSection('Mi perfil',this)">♙ Mi perfil</div>
     <div class="side-note"><b>Tu comunidad, tus oportunidades.</b><br>Comparte lo que te mueve y crece a tu ritmo.</div>
   </aside>
   <main class="content">
-    <div class="welcome"><div><div class="eyebrow">TU COMUNIDAD TE ESPERA</div><h1>¡Hola, Gabriel! 👋</h1><p>Descubre lo que está pasando en GOVI.</p></div><div class="live-pill">● 24 EN DIRECTO</div></div>
-    <div class="stories">
-      <div class="story add" onclick="openModal('postModal')"><div class="story-ring"><span>＋</span></div>Tu historia</div>
-      <div class="story"><div class="story-ring"><span>🎧</span></div>Alex R.</div>
-      <div class="story"><div class="story-ring"><span>🌻</span></div>Lucía</div>
-      <div class="story"><div class="story-ring"><span>🎮</span></div>Marcos</div>
-      <div class="story"><div class="story-ring"><span>🌍</span></div>Viajando</div>
-      <div class="story"><div class="story-ring"><span>🎤</span></div>Valen</div>
-      <div class="story"><div class="story-ring"><span>🐶</span></div>Pet lovers</div>
-    </div>
+    <div class="welcome"><div><div class="eyebrow">TU COMUNIDAD TE ESPERA</div><h1>¡Bienvenido a GOVI! 👋</h1><p>Comparte fotos, vídeos e ideas con tu comunidad.</p></div><div class="live-pill">● GOVI</div></div>
+    <div class="stories"><div class="story" onclick="openModal('postModal')"><div class="story-ring"><span>＋</span></div>Tu historia</div><div class="story"><div class="story-ring"><span>🌍</span></div>Comunidad</div><div class="story"><div class="story-ring"><span>🎥</span></div>Creadores</div></div>
     <section class="composer panel">
-      <div class="compose-top"><div class="avatar">G</div><input placeholder="¿Qué quieres compartir hoy?" onclick="openModal('postModal')" readonly></div>
-      <div class="compose-actions"><button onclick="openModal('postModal')">▧ Foto / vídeo</button><button onclick="openModal('liveModal')">◉ Iniciar directo</button><button onclick="openModal('postModal')">☷ Crear publicación</button></div>
+      <div class="compose-top"><div class="avatar" id="composerAvatar">G</div><input placeholder="¿Qué quieres compartir hoy?" onclick="openModal('postModal')" readonly></div>
+      <div class="compose-actions"><button onclick="openModal('postModal')">▧ Foto / vídeo</button><button onclick="openModal('postModal')">☷ Crear publicación</button></div>
     </section>
-    <div id="feed">
-      <article class="post panel" data-search="alex rojas comunidad buenos dias motivacion">
-        <div class="post-head"><div class="avatar" style="background:#D6B9F5">AR</div><div><div class="post-author">Alex Rojas <span style="color:#6D4AFF">✓</span></div><div class="post-meta">Hace 18 min · Barcelona · ◉ Público</div></div><button class="more" onclick="toast('Más opciones próximamente')">···</button></div>
-        <p class="post-text">A veces el mejor paso es simplemente no rendirse. Un día a la vez, una idea a la vez. ¿Qué pequeño objetivo tienes para esta semana? 💜</p>
-        <div class="post-art"><div class="art-caption"><small>GOVI · INSPIRACIÓN DIARIA</small><strong>Tu historia<br>todavía se escribe.</strong></div></div>
-        <div class="post-stats"><span class="stats-likes">💜 128 reacciones</span><span>24 comentarios · 9 compartidos</span></div>
-        <div class="post-buttons"><button onclick="likePost(this)">♡ Me gusta</button><button onclick="toggleComments(this)">◯ Comentar</button><button onclick="sharePost()">↗ Compartir</button></div>
-        <div class="comments"><input placeholder="Escribe un comentario…" onkeydown="if(event.key==='Enter'){toast('Comentario añadido (demo)');this.value=''}"></div>
-      </article>
-      <article class="post panel" data-search="lucia viajes naturaleza atardecer">
-        <div class="post-head"><div class="avatar" style="background:#F5C8A4">LM</div><div><div class="post-author">Lucía Méndez <span style="color:#6D4AFF">✓</span></div><div class="post-meta">Hace 42 min · Comunidad Viajera</div></div><button class="more" onclick="toast('Más opciones próximamente')">···</button></div>
-        <p class="post-text">Me guardo este atardecer para los días en los que necesite recordar lo bonito que es salir a descubrir el mundo. 🌅</p>
-        <div class="post-art photo"><div class="art-caption"><small>DIARIOS DE VIAJE</small><strong>Hay lugares<br>que se sienten.</strong></div></div>
-        <div class="post-stats"><span class="stats-likes">💜 86 reacciones</span><span>12 comentarios · 4 compartidos</span></div>
-        <div class="post-buttons"><button onclick="likePost(this)">♡ Me gusta</button><button onclick="toggleComments(this)">◯ Comentar</button><button onclick="sharePost()">↗ Compartir</button></div>
-        <div class="comments"><input placeholder="Escribe un comentario…" onkeydown="if(event.key==='Enter'){toast('Comentario añadido (demo)');this.value=''}"></div>
-      </article>
-    </div>
+    <div id="feed"><p class="demo-note">Cargando publicaciones de GOVI…</p></div>
   </main>
   <aside class="rightcol">
-    <section class="panel right-card"><div class="card-title">Directos ahora <a onclick="setSectionByName('Directos')">Ver todos</a></div>
-      <div class="live-row"><div class="live-thumb">🎮</div><div class="live-info"><b>Marcos juega en vivo</b><small>Gaming · hace 32 min</small></div><span class="viewers">● 1.2k</span></div>
-      <div class="live-row"><div class="live-thumb" style="background:linear-gradient(135deg,#E0A34B,#C85B6B)">🎤</div><div class="live-info"><b>Valen canta para ti</b><small>Música · hace 12 min</small></div><span class="viewers">● 843</span></div>
-      <div class="live-row"><div class="live-thumb" style="background:linear-gradient(135deg,#1C9F91,#3659A8)">🌍</div><div class="live-info"><b>Un paseo por la ciudad</b><small>IRL · hace 5 min</small></div><span class="viewers">● 326</span></div>
-    </section>
-    <section class="panel right-card"><div class="card-title">Creadores para descubrir <a onclick="toast('Explorador de creadores (demo)')">Explorar</a></div>
-      <div class="creator-row"><div class="avatar" style="background:#C6D8FF">SO</div><div><b>Sofía Ortega</b><small>Arte y creatividad</small></div><button class="follow" onclick="follow(this)">Seguir</button></div>
-      <div class="creator-row"><div class="avatar" style="background:#F4D2A7">DM</div><div><b>Diego Martín</b><small>Tecnología</small></div><button class="follow" onclick="follow(this)">Seguir</button></div>
-      <div class="creator-row"><div class="avatar" style="background:#C6E6D5">NP</div><div><b>Nora Pérez</b><small>Cocina fácil</small></div><button class="follow" onclick="follow(this)">Seguir</button></div>
-    </section>
-    <section class="panel right-card earn-card"><div class="eyebrow">CENTRO DE CREADORES</div><h3>Tu camino a monetizar ✦</h3><p>Construye una comunidad auténtica. Cuando cumplas los requisitos podrás solicitar acceso a las herramientas para ganar.</p><div class="progress"><span></span></div><div class="earn-foot"><span>1.280 / 2.000 seguidores</span><b>64%</b></div><button class="primary-btn" onclick="showEarnings()">Ver requisitos</button></section>
-    <div style="font-size:10px;color:#B8A77E;line-height:1.7;padding:0 5px">Acerca de · Normas · Privacidad · Ayuda<br>© 2026 GOVI · Prototipo conceptual</div>
+    <section class="panel right-card"><div class="card-title">Bienvenido a GOVI</div><p class="demo-note">Publica tus momentos, conversa con otros usuarios y construye tu comunidad.</p></section>
+    <section class="panel right-card"><div class="card-title">Creadores para descubrir</div><div class="creator-row"><div class="avatar">G</div><div><b>Comunidad GOVI</b><small>Tu mundo. Tu gente.</small></div></div></section>
   </aside>
 </div>
-</div>
-<div class="overlay" id="postModal"><div class="modal"><div class="modal-head"><h2>Crear publicación</h2><button class="close" onclick="closeModal('postModal')">×</button></div><textarea id="postText" placeholder="Comparte una idea, una foto o un momento con tu comunidad…"></textarea><div class="modal-actions"><button class="primary-btn" onclick="publishPost()">Publicar</button></div><p class="demo-note">Las publicaciones se guardan en GOVI y permanecen en tu perfil hasta que las edites o elimines.</p></div></div>
-<div class="overlay" id="liveModal"><div class="modal"><div class="modal-head"><h2>Crear en GOVI</h2><button class="close" onclick="closeModal('liveModal')">×</button></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><button class="gift" onclick="closeModal('liveModal');openModal('postModal')"><span>▧</span><b>Publicación</b><small>Foto o vídeo</small></button><button class="gift" onclick="startLive()"><span>◉</span><b>Directo</b><small>En vivo con tu gente</small></button></div><p class="demo-note">La emisión real necesitará un servicio de vídeo en directo y conexión de cámara/micrófono.</p></div></div>
-<div class="overlay" id="giftModal"><div class="modal"><div class="modal-head"><h2>Enviar un regalo 🎁</h2><button class="close" onclick="closeModal('giftModal')">×</button></div><div class="gift-grid"><button class="gift" onclick="sendGift('Corazón',10)"><span>💜</span><b>Corazón</b><small>10 monedas</small></button><button class="gift" onclick="sendGift('Estrella',50)"><span>⭐</span><b>Estrella</b><small>50 monedas</small></button><button class="gift" onclick="sendGift('Cohete',250)"><span>🚀</span><b>Cohete</b><small>250 monedas</small></button><button class="gift" onclick="sendGift('Ramo',500)"><span>💐</span><b>Ramo</b><small>500 monedas</small></button><button class="gift" onclick="sendGift('Diamante',1000)"><span>💎</span><b>Diamante</b><small>1.000 monedas</small></button><button class="gift" onclick="sendGift('Corona',2500)"><span>👑</span><b>Corona</b><small>2.500 monedas</small></button></div><p class="demo-note">Monedas y regalos ficticios para probar el diseño. No se realizan cargos ni pagos reales.</p></div></div>
-<div class="overlay" id="earnModal"><div class="modal"><div class="modal-head"><h2>Centro de monetización ✦</h2><button class="close" onclick="closeModal('earnModal')">×</button></div><p style="font-size:13px;line-height:1.6;color:#9293A5">Una propuesta de requisitos iniciales. Los umbrales finales se definirán según las normas, la seguridad y la sostenibilidad económica de la plataforma.</p><div style="display:grid;gap:10px"><div class="panel" style="padding:13px"><b>🎁 Regalos en directos</b><p style="font-size:12px;color:#9293A5;margin:5px 0">Desde 500 seguidores + identidad verificada y normas cumplidas.</p></div><div class="panel" style="padding:13px"><b>⭐ Suscripciones de fans</b><p style="font-size:12px;color:#9293A5;margin:5px 0">Desde 2.000 seguidores + actividad mínima.</p></div><div class="panel" style="padding:13px"><b>▶ Reparto de ingresos por contenido</b><p style="font-size:12px;color:#9293A5;margin:5px 0">Desde 5.000 seguidores + visualizaciones válidas.</p></div><div class="panel" style="padding:13px"><b>🤝 Colaboraciones con marcas</b><p style="font-size:12px;color:#9293A5;margin:5px 0">Acceso progresivo según comunidad y calidad del contenido.</p></div></div><p class="demo-note">Los requisitos son ilustrativos, no una promesa de ingresos ni una oferta de pagos activa.</p></div></div>
-<div class="overlay" id="authModal"><div class="modal"><div class="modal-head"><h2 id="authTitle">Únete a GOVI</h2><button class="close" onclick="closeModal('authModal')">×</button></div><div class="auth-fields"><input id="authName" placeholder="Tu nombre" autocomplete="name"><input id="authEmail" type="email" placeholder="Correo electrónico" autocomplete="email"><input id="authPassword" type="password" placeholder="Contraseña (mínimo 8 caracteres)" autocomplete="new-password"></div><div class="modal-actions"><button class="primary-btn" id="authSubmit" onclick="demoAuth()">Crear cuenta</button></div><button class="auth-switch" id="authSwitch" onclick="toggleAuthMode()">Ya tengo una cuenta · Iniciar sesión</button><p class="demo-note">El registro se conecta a GOVI mediante Supabase. Puede que tengas que confirmar tu correo electrónico.</p></div></div>
+
+<div class="overlay" id="postModal"><div class="modal">
+  <div class="modal-head"><h2 id="postModalTitle">Crear publicación</h2><button class="close" onclick="closeModal('postModal')">×</button></div>
+  <textarea id="postText" placeholder="¿Qué quieres compartir con tu comunidad?"></textarea>
+  <label class="file-label">＋ Añadir fotografía o vídeo<input id="mediaFile" type="file" accept="image/*,video/*"></label>
+  <div class="file-hint">Formatos habituales de imagen y vídeo. Límite recomendado: 50 MB por archivo. Los vídeos grandes pueden tardar en subir según tu conexión.</div>
+  <img id="imagePreview" class="preview" alt="Vista previa">
+  <video id="videoPreview" class="preview" controls playsinline></video>
+  <div class="modal-actions"><button class="secondary-btn" onclick="resetComposer();closeModal('postModal')">Cancelar</button><button class="primary-btn" id="publishButton" onclick="publishPost()">Publicar</button></div>
+  <p class="demo-note">Para publicar necesitas iniciar sesión. Tus publicaciones se guardarán en la base de datos GOVI.</p>
+</div></div>
+
+<div class="overlay" id="authModal"><div class="modal">
+  <div class="modal-head"><h2 id="authTitle">Únete a GOVI</h2><button class="close" onclick="closeModal('authModal')">×</button></div>
+  <div class="auth-fields"><input id="authName" placeholder="Tu nombre" autocomplete="name"><input id="authEmail" type="email" placeholder="Correo electrónico" autocomplete="email"><input id="authPassword" type="password" placeholder="Contraseña (mínimo 8 caracteres)" autocomplete="new-password"></div>
+  <div class="modal-actions"><button class="primary-btn" id="authSubmit" onclick="handleAuth()">Crear cuenta</button></div>
+  <button class="auth-switch" id="authSwitch" onclick="toggleAuthMode()">Ya tengo una cuenta · Iniciar sesión</button>
+  <p class="demo-note">En el registro, Supabase puede pedirte confirmar tu correo electrónico.</p>
+</div></div>
 <div class="toast" id="toast"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL='https://ennfigjdboxpkmfhttze.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY='sb_publishable_Jhya35mcZXssCNI9u3uzNQ_CfcvaTyH';
-const nexoraSupabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
-function toast(message){const el=document.getElementById('toast');el.textContent=message;el.classList.add('show');clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>el.classList.remove('show'),2400)}
-function openModal(id){document.getElementById(id).classList.add('show')}
-function closeModal(id){document.getElementById(id).classList.remove('show')}
-function likePost(button){button.classList.toggle('liked');button.textContent=button.classList.contains('liked')?'♥ Te gusta':'♡ Me gusta';const stat=button.closest('.post').querySelector('.stats-likes');let n=Number((stat.textContent.match(/\d+/)||['0'])[0]);stat.textContent='💜 '+(n+(button.classList.contains('liked')?1:-1))+' reacciones'}
-function toggleComments(button){const area=button.closest('.post').querySelector('.comments');area.classList.toggle('open');if(area.classList.contains('open'))area.querySelector('input').focus()}
-function sharePost(){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText('Mira esta publicación en GOVI (prototipo)').then(()=>toast('Enlace de demostración copiado')).catch(()=>toast('Publicación lista para compartir'))}else toast('Publicación lista para compartir')}
-function follow(button){button.textContent=button.textContent==='Seguir'?'Siguiendo':'Seguir';button.style.background=button.textContent==='Siguiendo'?'#6D4AFF':'transparent';button.style.color=button.textContent==='Siguiendo'?'white':'var(--site-primary)'}
-function renderSavedPost(item,currentUser){const post=document.createElement('article');post.className='post panel';const head=document.createElement('div');head.className='post-head';const avatar=document.createElement('div');avatar.className='avatar';avatar.textContent='G';const info=document.createElement('div');const author=document.createElement('div');author.className='post-author';author.textContent=item.user_id===currentUser?.id?(currentUser.user_metadata?.full_name||currentUser.email||'Tú'):'Usuario GOVI';const meta=document.createElement('div');meta.className='post-meta';meta.textContent=new Date(item.created_at).toLocaleString('es-ES')+' · Público';info.append(author,meta);head.append(avatar,info);if(item.user_id===currentUser?.id){const more=document.createElement('button');more.className='more';more.textContent='···';more.setAttribute('aria-label','Editar o borrar publicación');more.onclick=()=>managePost(item);head.append(more)}const content=document.createElement('p');content.className='post-text';content.textContent=item.content||'';const stats=document.createElement('div');stats.className='post-stats';stats.innerHTML='<span class="stats-likes">💜 0 reacciones</span><span>0 comentarios</span>';const buttons=document.createElement('div');buttons.className='post-buttons';buttons.innerHTML='<button onclick="likePost(this)">♡ Me gusta</button><button onclick="toggleComments(this)">◯ Comentar</button><button onclick="sharePost()">↗ Compartir</button>';const comments=document.createElement('div');comments.className='comments';const input=document.createElement('input');input.placeholder='Escribe un comentario…';comments.append(input);post.append(head,content,stats,buttons,comments);return post}
-async function managePost(item){const choice=prompt('Escribe EDITAR para modificar o BORRAR para eliminar tu publicación:');if(!choice)return;if(choice.trim().toLowerCase()==='editar'){const updated=prompt('Modifica el texto de tu publicación:',item.content||'');if(updated===null)return;if(!updated.trim()){toast('La publicación no puede quedar vacía');return}const {error}=await nexoraSupabase.from('posts').update({content:updated.trim()}).eq('id',item.id).eq('user_id',item.user_id);if(error){toast('No se pudo editar: '+error.message);return}await loadSavedPosts();toast('Publicación actualizada')}else if(choice.trim().toLowerCase()==='borrar'){if(!confirm('¿Seguro que quieres borrar esta publicación?'))return;const {error}=await nexoraSupabase.from('posts').delete().eq('id',item.id).eq('user_id',item.user_id);if(error){toast('No se pudo borrar: '+error.message);return}await loadSavedPosts();toast('Publicación eliminada')}}
-async function loadSavedPosts(){const feed=document.getElementById('feed');const {data:{user}}=await nexoraSupabase.auth.getUser();const {data,error}=await nexoraSupabase.from('posts').select('id,user_id,content,media_url,created_at').order('created_at',{ascending:false});if(error){toast('No se pudieron cargar las publicaciones: '+error.message);return}feed.replaceChildren();(data||[]).forEach(item=>feed.append(renderSavedPost(item,user)))}
-async function publishPost(){const field=document.getElementById('postText');const value=field.value.trim();if(!value){toast('Escribe algo antes de publicar');return}const {data:{user}}=await nexoraSupabase.auth.getUser();if(!user){toast('Inicia sesión para publicar');openModal('authModal');return}const button=document.querySelector('#postModal .primary-btn');button.disabled=true;button.textContent='Publicando…';try{const {error}=await nexoraSupabase.from('posts').insert({user_id:user.id,content:value,media_url:null});if(error)throw error;field.value='';closeModal('postModal');await loadSavedPosts();toast('¡Publicación guardada en GOVI!')}catch(error){toast('No se pudo guardar: '+error.message)}finally{button.disabled=false;button.textContent='Publicar'}}
-function startLive(){closeModal('liveModal');toast('El directo de prueba estaría listo para configurar');setTimeout(()=>openModal('giftModal'),450)}
-function sendGift(name,coins){closeModal('giftModal');toast('¡'+name+' enviado! '+coins+' monedas de prueba')}
-function showEarnings(){openModal('earnModal')}
-let authMode='register';
-function toggleAuthMode(){authMode=authMode==='register'?'login':'register';document.getElementById('authTitle').textContent=authMode==='register'?'Únete a GOVI':'Bienvenido de nuevo';document.getElementById('authName').style.display=authMode==='register'?'block':'none';document.getElementById('authPassword').setAttribute('autocomplete',authMode==='register'?'new-password':'current-password');document.getElementById('authSubmit').textContent=authMode==='register'?'Crear cuenta':'Iniciar sesión';document.getElementById('authSwitch').textContent=authMode==='register'?'Ya tengo una cuenta · Iniciar sesión':'No tengo cuenta · Registrarme'}
-async function demoAuth(){const name=document.getElementById('authName').value.trim();const email=document.getElementById('authEmail').value.trim();const password=document.getElementById('authPassword').value;const submit=document.getElementById('authSubmit');if(authMode==='register'&&!name){toast('Escribe tu nombre');return}if(!email||!email.includes('@')){toast('Introduce un correo válido');return}if(password.length<8){toast('La contraseña debe tener 8 caracteres como mínimo');return}submit.disabled=true;submit.textContent='Conectando…';try{if(authMode==='register'){const {data,error}=await nexoraSupabase.auth.signUp({email,password,options:{data:{full_name:name}}});if(error)throw error;closeModal('authModal');toast(data.session?'¡Cuenta creada! Ya estás dentro.':'¡Registro enviado! Revisa tu correo para confirmar la cuenta.')}else{const {data,error}=await nexoraSupabase.auth.signInWithPassword({email,password});if(error)throw error;closeModal('authModal');document.querySelector('.top-actions .avatar').textContent=(data.user.user_metadata.full_name||email).charAt(0).toUpperCase();toast('¡Bienvenido a GOVI!')}}catch(error){toast(error.message||'No se pudo completar la operación')}finally{submit.disabled=false;submit.textContent=authMode==='register'?'Crear cuenta':'Iniciar sesión'}}
-async function refreshGoviSession(){const {data:{session}}=await nexoraSupabase.auth.getSession();if(session){const label=session.user.user_metadata?.full_name||session.user.email||'G';document.querySelector('.top-actions .avatar').textContent=label.charAt(0).toUpperCase();await loadSavedPosts()}else{document.getElementById('feed').innerHTML='';}}
-function setSection(el){document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));el.classList.add('active');toast('Vista '+el.dataset.section+' · contenido de demostración')}
-function setSectionByName(name){const el=[...document.querySelectorAll('.nav-item')].find(n=>n.dataset.section===name);if(el)setSection(el)}
-document.getElementById('searchInput').addEventListener('input',e=>{const q=e.target.value.toLowerCase();document.querySelectorAll('#feed .post').forEach(p=>p.style.display=(p.innerText+' '+(p.dataset.search||'')).toLowerCase().includes(q)?'block':'none')});
+const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+const BUCKET='govi-media';
+let currentUser=null, authMode='register', selectedFile=null, activeFilter='Inicio';
+const $=id=>document.getElementById(id);
+function toast(message){const el=$('toast');el.textContent=message;el.classList.add('show');clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>el.classList.remove('show'),3000)}
+function openModal(id){$(id).classList.add('show')}
+function closeModal(id){$(id).classList.remove('show')}
+function escapeHTML(value=''){return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function initials(name='G'){return name.trim().split(/\s+/).slice(0,2).map(x=>x[0]).join('').toUpperCase()||'G'}
+function timeLabel(date){return new Date(date).toLocaleString('es-ES',{dateStyle:'short',timeStyle:'short'})}
+function resetComposer(){$('postText').value='';$('mediaFile').value='';selectedFile=null;$('imagePreview').style.display='none';$('videoPreview').style.display='none';$('imagePreview').src='';$('videoPreview').src='';$('postModalTitle').textContent='Crear publicación';$('publishButton').textContent='Publicar';$('publishButton').dataset.editId=''}
+$('mediaFile').addEventListener('change',e=>{
+  selectedFile=e.target.files[0]||null;
+  $('imagePreview').style.display='none';$('videoPreview').style.display='none';
+  if(!selectedFile)return;
+  if(selectedFile.size>50*1024*1024){toast('El archivo supera los 50 MB. Elige uno más pequeño.');e.target.value='';selectedFile=null;return}
+  const url=URL.createObjectURL(selectedFile);
+  if(selectedFile.type.startsWith('image/')){$('imagePreview').src=url;$('imagePreview').style.display='block'}
+  else if(selectedFile.type.startsWith('video/')){$('videoPreview').src=url;$('videoPreview').style.display='block'}
+  else{toast('Formato de archivo no compatible');selectedFile=null}
+});
+async function uploadMedia(file,userId){
+  const ext=(file.name.split('.').pop()||'bin').toLowerCase().replace(/[^a-z0-9]/g,'');
+  const path=`${userId}/${Date.now()}-${crypto.randomUUID()}.${ext}`;
+  const {error}=await supabaseClient.storage.from(BUCKET).upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type});
+  if(error)throw error;
+  const {data}=supabaseClient.storage.from(BUCKET).getPublicUrl(path);
+  return {url:data.publicUrl,type:file.type.startsWith('video/')?'video':'image',path};
+}
+async function publishPost(){
+  if(!currentUser){toast('Inicia sesión para publicar');openModal('authModal');return}
+  const content=$('postText').value.trim(), editId=$('publishButton').dataset.editId;
+  if(!content&&!selectedFile&&!editId){toast('Escribe algo o añade una foto/vídeo');return}
+  const button=$('publishButton');button.disabled=true;button.textContent=editId?'Guardando…':'Publicando…';
+  try{
+    let media={url:null,type:null,path:null};
+    if(selectedFile)media=await uploadMedia(selectedFile,currentUser.id);
+    if(editId){
+      const update={content,updated_at:new Date().toISOString()};
+      if(selectedFile){update.media_url=media.url;update.media_type=media.type;update.media_path=media.path}
+      const {error}=await supabaseClient.from('posts').update(update).eq('id',editId).eq('user_id',currentUser.id);
+      if(error)throw error;
+      toast('Publicación actualizada');
+    }else{
+      const {error}=await supabaseClient.from('posts').insert({user_id:currentUser.id,content,media_url:media.url,media_type:media.type,media_path:media.path});
+      if(error)throw error;
+      toast('¡Publicación compartida en GOVI!');
+    }
+    resetComposer();closeModal('postModal');await loadFeed();
+  }catch(error){console.error(error);toast('No se pudo guardar: '+(error.message||'revisa la configuración de Supabase'))}
+  finally{button.disabled=false;button.textContent=$('publishButton').dataset.editId?'Guardar cambios':'Publicar'}
+}
+async function loadFeed(){
+  const feed=$('feed');feed.innerHTML='<p class="demo-note">Cargando publicaciones…</p>';
+  const {data:posts,error}=await supabaseClient.from('posts').select('id,user_id,content,media_url,media_type,media_path,created_at,updated_at').order('created_at',{ascending:false}).limit(100);
+  if(error){console.error(error);feed.innerHTML='<p class="demo-note">No se pudieron cargar las publicaciones. Comprueba que ejecutaste el SQL de configuración en Supabase.</p>';return}
+  if(!posts?.length){feed.innerHTML='<section class="panel" style="padding:22px;text-align:center"><b>¡Bienvenido a GOVI!</b><p class="demo-note">Todavía no hay publicaciones. Sé el primero en compartir una foto, un vídeo o una idea.</p></section>';return}
+  const ids=posts.map(p=>p.id);
+  const [{data:likes},{data:comments}]=await Promise.all([
+    supabaseClient.from('post_likes').select('post_id,user_id').in('post_id',ids),
+    supabaseClient.from('post_comments').select('id,post_id,user_id,content,created_at').in('post_id',ids).order('created_at',{ascending:true})
+  ]);
+  const userIds=[...new Set([...(likes||[]).map(x=>x.user_id),...(comments||[]).map(x=>x.user_id),...posts.map(x=>x.user_id)])];
+  let profiles={};
+  if(userIds.length){const {data}=await supabaseClient.from('profiles').select('id,display_name').in('id',userIds);(data||[]).forEach(p=>profiles[p.id]=p.display_name)}
+  feed.replaceChildren();
+  posts.forEach(post=>feed.append(renderPost(post,likes||[],comments||[],profiles)));
+  applyFilter();
+}
+function renderPost(post,likes,comments,profiles){
+  const mine=currentUser&&post.user_id===currentUser.id;
+  const postLikes=likes.filter(x=>x.post_id===post.id), postComments=comments.filter(x=>x.post_id===post.id);
+  const liked=!!currentUser&&postLikes.some(x=>x.user_id===currentUser.id);
+  const author=profiles[post.user_id]|| (mine?'Tú':'Usuario GOVI');
+  const article=document.createElement('article');article.className='post panel';article.dataset.kind=post.media_type||'text';article.dataset.search=(author+' '+(post.content||'')).toLowerCase();
+  let media='';
+  if(post.media_url){
+    media=post.media_type==='video'
+      ? `<video class="post-media video" controls playsinline preload="metadata" src="${escapeHTML(post.media_url)}"></video>`
+      : `<img class="post-media" loading="lazy" src="${escapeHTML(post.media_url)}" alt="Fotografía compartida en GOVI">`;
+  }
+  const commentHTML=postComments.map(c=>`<div class="comment"><b>${escapeHTML(profiles[c.user_id]||'Usuario')}</b>${escapeHTML(c.content)}<div class="post-meta">${timeLabel(c.created_at)}</div></div>`).join('');
+  article.innerHTML=`
+    <div class="post-head"><div class="avatar">${escapeHTML(initials(author))}</div><div><div class="post-author">${escapeHTML(author)}${mine?' · Tú':''}</div><div class="post-meta">${timeLabel(post.created_at)} · Público</div></div>
+    ${mine?`<button class="more" aria-label="Opciones" data-action="manage" data-id="${post.id}">···</button>`:''}</div>
+    ${post.content?`<p class="post-text">${escapeHTML(post.content)}</p>`:''}${media}
+    <div class="post-stats"><span>💛 ${postLikes.length} Me gusta</span><span>${postComments.length} comentarios</span></div>
+    <div class="post-buttons"><button class="${liked?'liked':''}" data-action="like" data-id="${post.id}">${liked?'♥ Te gusta':'♡ Me gusta'}</button><button data-action="comments" data-id="${post.id}">◯ Comentar</button><button data-action="share" data-id="${post.id}">↗ Compartir</button></div>
+    <div class="comments" id="comments-${post.id}"><div class="comment-list">${commentHTML||'<p class="demo-note">Sé el primero en comentar.</p>'}</div><div class="comment-form"><input maxlength="1000" placeholder="Escribe un comentario…" ${currentUser?'':'disabled'}><button data-action="send-comment" data-id="${post.id}" ${currentUser?'':'disabled'}>Enviar</button></div></div>`;
+  return article;
+}
+$('feed').addEventListener('click',async e=>{
+  const btn=e.target.closest('[data-action]');if(!btn)return;
+  const {action,id}=btn.dataset;
+  if(action==='like')return toggleLike(id);
+  if(action==='comments'){const area=$('comments-'+id);area.classList.toggle('open');if(area.classList.contains('open'))area.querySelector('input')?.focus();return}
+  if(action==='share')return sharePost(id);
+  if(action==='manage')return managePost(id);
+  if(action==='send-comment')return addComment(id,btn);
+});
+$('feed').addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.matches('.comment-form input')){const btn=e.target.parentElement.querySelector('button');addComment(btn.dataset.id,btn)}});
+async function toggleLike(postId){
+  if(!currentUser){toast('Inicia sesión para dar Me gusta');openModal('authModal');return}
+  const {data:existing,error:findError}=await supabaseClient.from('post_likes').select('post_id').eq('post_id',postId).eq('user_id',currentUser.id).maybeSingle();
+  if(findError){toast('No se pudo comprobar el Me gusta: '+findError.message);return}
+  let error;
+  if(existing){({error}=await supabaseClient.from('post_likes').delete().eq('post_id',postId).eq('user_id',currentUser.id))}
+  else{({error}=await supabaseClient.from('post_likes').insert({post_id:postId,user_id:currentUser.id}))}
+  if(error){toast('No se pudo actualizar Me gusta: '+error.message);return}
+  await loadFeed();
+}
+async function addComment(postId,button){
+  if(!currentUser){toast('Inicia sesión para comentar');openModal('authModal');return}
+  const input=button.parentElement.querySelector('input'),content=input.value.trim();if(!content)return;
+  button.disabled=true;
+  const {error}=await supabaseClient.from('post_comments').insert({post_id:postId,user_id:currentUser.id,content});
+  button.disabled=false;
+  if(error){toast('No se pudo comentar: '+error.message);return}
+  await loadFeed();$('comments-'+postId)?.classList.add('open');toast('Comentario publicado');
+}
+async function sharePost(id){
+  const url=location.origin+location.pathname+'#post-'+id;
+  try{if(navigator.share){await navigator.share({title:'GOVI',text:'Mira esta publicación en GOVI',url})}
+  else if(navigator.clipboard){await navigator.clipboard.writeText(url);toast('Enlace copiado para compartir')}
+  else{prompt('Copia este enlace:',url)}}catch(e){if(e.name!=='AbortError')toast('No se pudo compartir el enlace')}
+}
+async function managePost(id){
+  const choice=prompt('Escribe EDITAR o ELIMINAR:');if(!choice)return;
+  const {data:post,error}=await supabaseClient.from('posts').select('*').eq('id',id).eq('user_id',currentUser.id).single();
+  if(error||!post){toast('No se encontró tu publicación');return}
+  if(choice.trim().toLowerCase()==='editar'){
+    resetComposer();$('postModalTitle').textContent='Editar publicación';$('postText').value=post.content||'';$('publishButton').textContent='Guardar cambios';$('publishButton').dataset.editId=id;openModal('postModal');
+  }else if(['eliminar','borrar'].includes(choice.trim().toLowerCase())){
+    if(!confirm('¿Seguro que quieres eliminar esta publicación?'))return;
+    const {error:deleteError}=await supabaseClient.from('posts').delete().eq('id',id).eq('user_id',currentUser.id);
+    if(deleteError){toast('No se pudo eliminar: '+deleteError.message);return}
+    if(post.media_path)await supabaseClient.storage.from(BUCKET).remove([post.media_path]);
+    toast('Publicación eliminada');await loadFeed();
+  }else toast('Opción no reconocida. Escribe EDITAR o ELIMINAR.');
+}
+function toggleAuthMode(){authMode=authMode==='register'?'login':'register';$('authTitle').textContent=authMode==='register'?'Únete a GOVI':'Bienvenido de nuevo';$('authName').style.display=authMode==='register'?'block':'none';$('authPassword').autocomplete=authMode==='register'?'new-password':'current-password';$('authSubmit').textContent=authMode==='register'?'Crear cuenta':'Iniciar sesión';$('authSwitch').textContent=authMode==='register'?'Ya tengo una cuenta · Iniciar sesión':'No tengo cuenta · Registrarme'}
+async function handleAuth(){
+  const name=$('authName').value.trim(),email=$('authEmail').value.trim(),password=$('authPassword').value,button=$('authSubmit');
+  if(authMode==='register'&&!name){toast('Escribe tu nombre');return}
+  if(!email||!email.includes('@')){toast('Introduce un correo válido');return}
+  if(password.length<8){toast('La contraseña debe tener 8 caracteres como mínimo');return}
+  button.disabled=true;button.textContent='Conectando…';
+  try{
+    if(authMode==='register'){
+      const {data,error}=await supabaseClient.auth.signUp({email,password,options:{data:{display_name:name,full_name:name}}});if(error)throw error;
+      if(data.user&&!data.session)toast('Registro enviado. Revisa tu correo para confirmar la cuenta.');else toast('¡Cuenta creada en GOVI!');
+    }else{const {error}=await supabaseClient.auth.signInWithPassword({email,password});if(error)throw error;toast('¡Bienvenido a GOVI!')}
+    closeModal('authModal');await refreshSession();
+  }catch(error){toast(error.message||'No se pudo completar la operación')}
+  finally{button.disabled=false;button.textContent=authMode==='register'?'Crear cuenta':'Iniciar sesión'}
+}
+async function refreshSession(){
+  const {data:{session}}=await supabaseClient.auth.getSession();currentUser=session?.user||null;
+  const label=currentUser?.user_metadata?.display_name||currentUser?.user_metadata?.full_name||currentUser?.email||'G';
+  $('accountButton').textContent=initials(label);$('composerAvatar').textContent=initials(label);
+  await loadFeed();
+}
+function filterSection(section,el){activeFilter=section;document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));el.classList.add('active');applyFilter()}
+function applyFilter(){
+  document.querySelectorAll('#feed .post').forEach(p=>{
+    const q=$('searchInput').value.toLowerCase(),matchesSearch=p.dataset.search.includes(q);
+    const matchesType=activeFilter==='Inicio'||activeFilter==='Mi perfil'||(activeFilter==='Fotos'&&p.dataset.kind==='image')||(activeFilter==='Vídeos'&&p.dataset.kind==='video');
+    const matchesMine=activeFilter!=='Mi perfil'||(currentUser&&p.querySelector('.post-author')?.textContent.includes('Tú'));
+    p.style.display=matchesSearch&&matchesType&&matchesMine?'block':'none';
+  });
+}
+$('searchInput').addEventListener('input',applyFilter);
 document.querySelectorAll('.overlay').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('show')}));
-nexoraSupabase.auth.onAuthStateChange(()=>{setTimeout(refreshGoviSession,0)});
-refreshGoviSession();
+$('authSwitch').addEventListener('click',toggleAuthMode);
+supabaseClient.auth.onAuthStateChange(()=>{setTimeout(refreshSession,0)});
+refreshSession();
 </script>
 </body>
 </html>
