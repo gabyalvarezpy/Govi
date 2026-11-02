@@ -179,7 +179,11 @@ $('feed').addEventListener('click',async e=>{
   if(action==='manage')return managePost(id);
   if(action==='send-comment')return addComment(id,btn);
 });
-$('feed').addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.matches('.comment-form input')){const btn=e.target.parentElement.querySelector('button');addComment(btn.dataset.id,btn)}});
+$('feed').addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&e.target.matches('.comment-form input')){
+    const btn=e.target.parentElement.querySelector('button');addComment(btn.dataset.id,btn);
+  }
+});
 async function toggleLike(postId){
   if(!currentUser){toast('Inicia sesión para dar Me gusta');openModal('authModal');return}
   const {data:existing,error:findError}=await supabaseClient.from('post_likes').select('post_id').eq('post_id',postId).eq('user_id',currentUser.id).maybeSingle();
@@ -201,9 +205,11 @@ async function addComment(postId,button){
 }
 async function sharePost(id){
   const url=location.origin+location.pathname+'#post-'+id;
-  try{if(navigator.share){await navigator.share({title:'GOVI',text:'Mira esta publicación en GOVI',url})}
-  else if(navigator.clipboard){await navigator.clipboard.writeText(url);toast('Enlace copiado para compartir')}
-  else{prompt('Copia este enlace:',url)}}catch(e){if(e.name!=='AbortError')toast('No se pudo compartir el enlace')}
+  try{
+    if(navigator.share){await navigator.share({title:'GOVI',text:'Mira esta publicación en GOVI',url})}
+    else if(navigator.clipboard){await navigator.clipboard.writeText(url);toast('Enlace copiado para compartir')}
+    else{prompt('Copia este enlace:',url)}
+  }catch(e){if(e.name!=='AbortError')toast('No se pudo compartir el enlace')}
 }
 async function managePost(id){
   const choice=prompt('Escribe EDITAR o ELIMINAR:');if(!choice)return;
@@ -219,7 +225,14 @@ async function managePost(id){
     toast('Publicación eliminada');await loadFeed();
   }else toast('Opción no reconocida. Escribe EDITAR o ELIMINAR.');
 }
-function toggleAuthMode(){authMode=authMode==='register'?'login':'register';$('authTitle').textContent=authMode==='register'?'Únete a GOVI':'Bienvenido de nuevo';$('authName').style.display=authMode==='register'?'block':'none';$('authPassword').autocomplete=authMode==='register'?'new-password':'current-password';$('authSubmit').textContent=authMode==='register'?'Crear cuenta':'Iniciar sesión';$('authSwitch').textContent=authMode==='register'?'Ya tengo una cuenta · Iniciar sesión':'No tengo cuenta · Registrarme'}
+function toggleAuthMode(){
+  authMode=authMode==='register'?'login':'register';
+  $('authTitle').textContent=authMode==='register'?'Únete a GOVI':'Bienvenido de nuevo';
+  $('authName').style.display=authMode==='register'?'block':'none';
+  $('authPassword').autocomplete=authMode==='register'?'new-password':'current-password';
+  $('authSubmit').textContent=authMode==='register'?'Crear cuenta':'Iniciar sesión';
+  $('authSwitch').textContent=authMode==='register'?'Ya tengo una cuenta · Iniciar sesión':'No tengo cuenta · Registrarme';
+}
 async function handleAuth(){
   const name=$('authName').value.trim(),email=$('authEmail').value.trim(),password=$('authPassword').value,button=$('authSubmit');
   if(authMode==='register'&&!name){toast('Escribe tu nombre');return}
@@ -228,9 +241,15 @@ async function handleAuth(){
   button.disabled=true;button.textContent='Conectando…';
   try{
     if(authMode==='register'){
-      const {data,error}=await supabaseClient.auth.signUp({email,password,options:{data:{display_name:name,full_name:name}}});if(error)throw error;
-      if(data.user&&!data.session)toast('Registro enviado. Revisa tu correo para confirmar la cuenta.');else toast('¡Cuenta creada en GOVI!');
-    }else{const {error}=await supabaseClient.auth.signInWithPassword({email,password});if(error)throw error;toast('¡Bienvenido a GOVI!')}
+      const {data,error}=await supabaseClient.auth.signUp({email,password,options:{data:{display_name:name,full_name:name}}});
+      if(error)throw error;
+      if(data.user&&!data.session)toast('Registro enviado. Revisa tu correo para confirmar la cuenta.');
+      else toast('¡Cuenta creada en GOVI!');
+    }else{
+      const {error}=await supabaseClient.auth.signInWithPassword({email,password});
+      if(error)throw error;
+      toast('¡Bienvenido a GOVI!');
+    }
     closeModal('authModal');await refreshSession();
   }catch(error){toast(error.message||'No se pudo completar la operación')}
   finally{button.disabled=false;button.textContent=authMode==='register'?'Crear cuenta':'Iniciar sesión'}
@@ -241,7 +260,9 @@ async function refreshSession(){
   $('accountButton').textContent=initials(label);$('composerAvatar').textContent=initials(label);
   await loadFeed();
 }
-function filterSection(section,el){activeFilter=section;document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));el.classList.add('active');applyFilter()}
+function filterSection(section,el){
+  activeFilter=section;document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));el.classList.add('active');applyFilter();
+}
 function applyFilter(){
   document.querySelectorAll('#feed .post').forEach(p=>{
     const q=$('searchInput').value.toLowerCase(),matchesSearch=p.dataset.search.includes(q);
@@ -252,7 +273,6 @@ function applyFilter(){
 }
 $('searchInput').addEventListener('input',applyFilter);
 document.querySelectorAll('.overlay').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('show')}));
-$('authSwitch').addEventListener('click',toggleAuthMode);
 supabaseClient.auth.onAuthStateChange(()=>{setTimeout(refreshSession,0)});
 refreshSession();
 </script>
