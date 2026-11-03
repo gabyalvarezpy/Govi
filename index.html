@@ -190,6 +190,11 @@ display:grid;place-items:center;color:var(--gold2);font-size:23px;font-weight:bo
 .profile-help{font-size:12px;color:var(--muted);line-height:1.5}
 @media(max-width:650px){.profile-form-grid{grid-template-columns:1fr}}
 
+
+/* Recorte de foto de perfil */
+.crop-stage{width:min( min(78vw,340px), 340px);height:min(78vw,340px);max-height:340px;margin:14px auto;overflow:hidden;border-radius:50%;background:#080808;border:3px solid #a98235;touch-action:none;position:relative;cursor:grab}
+.crop-stage:active{cursor:grabbing}.crop-stage img{position:absolute;max-width:none;user-select:none;-webkit-user-drag:none;pointer-events:none}
+.crop-controls{display:flex;align-items:center;gap:12px}.crop-controls input{flex:1;accent-color:var(--gold)}
 </style>
 </head>
 <body>
@@ -293,6 +298,18 @@ display:grid;place-items:center;color:var(--gold2);font-size:23px;font-weight:bo
 </div>
 
  
+
+<div id="cropModal" class="modal hidden">
+ <div class="modal-card">
+  <div class="modal-head"><h3>Ajustá tu foto</h3><button class="close" onclick="cancelAvatarCrop()">×</button></div>
+  <p class="profile-help">Arrastrá la imagen para centrarla y usá el zoom hasta que quede como querés. La foto se verá redonda en GOVI.</p>
+  <div id="cropStage" class="crop-stage"><img id="cropImage" alt="Vista previa del recorte"></div>
+  <div class="crop-controls"><span class="muted">Zoom</span><input id="cropZoom" type="range" min="1" max="3" step=".01" value="1"></div>
+  <div class="quick-actions"><button class="action-btn" onclick="cancelAvatarCrop()">Cancelar</button><button class="goldbtn" onclick="applyAvatarCrop()">Usar esta foto</button></div>
+  <p id="cropMessage" class="muted"></p>
+ </div>
+</div>
+
 <div id="profileModal" class="modal hidden">
   <div class="modal-card">
     <div class="modal-head"><h3>Personalizá tu perfil</h3><button class="close" onclick="closeProfileEditor()">×</button></div>
@@ -336,6 +353,7 @@ const db = window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
 let currentUser = null;
 let selectedFile = null;
+let avatarCropFile=null, avatarCropImage=null, cropScale=1, cropX=0, cropY=0, cropBase=1, cropDragging=false, cropPointer=null;
 
 const $ = id => document.getElementById(id);
 
@@ -417,6 +435,7 @@ function openProfileEditor(){
   $('editBio').value=meta.bio || '';
   $('avatarUpload').value='';
   $('coverUpload').value='';
+  avatarCropFile=null;
   $('profileMessage').textContent='';
   $('profileModal').classList.remove('hidden');
 }
@@ -443,7 +462,7 @@ async function saveProfile(){
   $('profileMessage').textContent='Guardando tu perfil…';
   try{
     const meta={...profileData(),display_name:displayName,username:username || displayName.toLowerCase().replace(/[^a-z0-9_]/g,'').slice(0,24),bio};
-    const avatar=await uploadProfileImage($('avatarUpload').files[0],'avatar');
+    const avatar=await uploadProfileImage(avatarCropFile || $('avatarUpload').files[0],'avatar');
     const cover=await uploadProfileImage($('coverUpload').files[0],'cover');
     if(avatar)meta.avatar_url=avatar;
     if(cover)meta.cover_url=cover;
@@ -455,6 +474,70 @@ async function saveProfile(){
   }catch(error){
     $('profileMessage').textContent='No se pudo guardar: '+error.message;
   }
+}
+
+
+function openAvatarCrop(file){
+  if(!file || !file.type.startsWith('image/'))return;
+  if(file.size>8*1024*1024){$('profileMessage').textContent='La foto debe pesar menos de 8 MB.';$('avatarUpload').value='';return;}
+  const reader=new FileReader();
+  reader.onload=()=>{
+    const img=new Image();
+    img.onload=()=>{
+      avatarCropImage=img;cropScale=1;cropX=0;cropY=0;
+      const stage=$('cropStage'), side=stage.clientWidth;
+      cropBase=Math.max(side/img.naturalWidth,side/img.naturalHeight);
+      $('cropImage').src=reader.result;
+      $('cropZoom').value=1;
+      $('cropModal').classList.remove('hidden');
+      renderAvatarCrop();
+    };
+    img.onerror=()=>{$('profileMessage').textContent='No se pudo abrir esa imagen.';};
+    img.src=reader.result;
+  };
+  reader.readAsDataURL(file);
+}
+function renderAvatarCrop(){
+  if(!avatarCropImage)return;
+  const side=$('cropStage').clientWidth, img=$('cropImage');
+  const w=avatarCropImage.naturalWidth*cropBase*cropScale;
+  const h=avatarCropImage.naturalHeight*cropBase*cropScale;
+  const minX=side-w,maxX=0,minY=side-h,maxY=0;
+  cropX=Math.min(maxX,Math.max(minX,cropX));cropY=Math.min(maxY,Math.max(minY,cropY));
+  img.style.width=w+'px';img.style.height=h+'px';img.style.left=cropX+'px';img.style.top=cropY+'px';
+}
+$('avatarUpload').addEventListener('change',e=>{const file=e.target.files[0];if(file)openAvatarCrop(file);});
+$('cropZoom').addEventListener('input',e=>{
+  const old=cropScale;cropScale=Number(e.target.value);
+  const side=$('cropStage').clientWidth,cx=side/2,cy=side/2;
+  const ratio=cropScale/old;cropX=cx-(cx-cropX)*ratio;cropY=cy-(cy-cropY)*ratio;
+  renderAvatarCrop();
+});
+$('cropStage').addEventListener('pointerdown',e=>{
+  if(!avatarCropImage)return;cropDragging=true;cropPointer={x:e.clientX,y:e.clientY};$('cropStage').setPointerCapture(e.pointerId);
+});
+$('cropStage').addEventListener('pointermove',e=>{
+  if(!cropDragging||!cropPointer)return;
+  cropX+=e.clientX-cropPointer.x;cropY+=e.clientY-cropPointer.y;cropPointer={x:e.clientX,y:e.clientY};renderAvatarCrop();
+});
+$('cropStage').addEventListener('pointerup',()=>{cropDragging=false;cropPointer=null;});
+$('cropStage').addEventListener('pointercancel',()=>{cropDragging=false;cropPointer=null;});
+function cancelAvatarCrop(){$('cropModal').classList.add('hidden');$('avatarUpload').value='';avatarCropImage=null;}
+async function applyAvatarCrop(){
+  if(!avatarCropImage)return;
+  const side=512, sourceSide=$('cropStage').clientWidth;
+  const scale=side/sourceSide;
+  const canvas=document.createElement('canvas');canvas.width=side;canvas.height=side;
+  const ctx=canvas.getContext('2d');
+  const w=avatarCropImage.naturalWidth*cropBase*cropScale*scale;
+  const h=avatarCropImage.naturalHeight*cropBase*cropScale*scale;
+  ctx.drawImage(avatarCropImage,cropX*scale,cropY*scale,w,h);
+  canvas.toBlob(blob=>{
+    if(!blob){$('cropMessage').textContent='No se pudo procesar la foto.';return;}
+    avatarCropFile=new File([blob],'govi-avatar.jpg',{type:'image/jpeg'});
+    $('cropModal').classList.add('hidden');avatarCropImage=null;
+    $('profileMessage').textContent='Foto recortada. Guardá el perfil para conservarla.';
+  },'image/jpeg',.9);
 }
 
 function openComposer(){
