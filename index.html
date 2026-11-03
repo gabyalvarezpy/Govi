@@ -1,280 +1,574 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GOVI — Tu mundo. Tu gente.</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GOVI | Tu mundo, tu comunidad</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{--gold:#C99A32;--gold2:#E8C66A;--bg:#101010;--panel:#191919;--text:#F5F0E5;--muted:#aaa18d;--line:#393020}
-*{box-sizing:border-box}body{margin:0;background:#080808;color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
-button,input,textarea{font:inherit}button{cursor:pointer}
-.topbar{height:66px;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:0 clamp(14px,4vw,48px);background:#080808;border-bottom:1px solid #9A742A;position:sticky;top:0;z-index:10}
-.brand{display:flex;align-items:center;gap:10px;font-size:25px;font-weight:900;letter-spacing:-1px}.brand-mark{width:35px;height:35px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#F8DF91,#B77B18);color:#080808}
-.search{width:min(420px,40vw)}.search input{width:100%;border:1px solid #ffffff33;background:#ffffff12;color:white;border-radius:25px;padding:11px 15px;outline:none}
-.top-actions{display:flex;align-items:center;gap:9px}.top-actions button{border:0;background:#ffffff18;color:white;border-radius:12px;padding:10px 13px;font-weight:700}
-.avatar{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:#F9C46A;color:#422B10;font-weight:900;border:2px solid #ffffff55}
-.layout{max-width:1400px;margin:auto;padding:24px clamp(12px,3vw,30px);display:grid;grid-template-columns:205px minmax(0,1fr) 270px;gap:22px;align-items:start}
-.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:0 8px 25px #0002}.sidebar{padding:14px;position:sticky;top:86px}
-.nav-item{padding:12px;border-radius:12px;margin:3px 0;color:#c9bea3;font-size:14px;font-weight:700;cursor:pointer}.nav-item.active,.nav-item:hover{background:#C99A3220;color:var(--gold2)}
-.side-note{background:#211b10;color:#e8d6a7;padding:14px;border-radius:13px;font-size:12px;line-height:1.5;margin-top:18px}
-.content{min-width:0}.welcome{display:flex;justify-content:space-between;align-items:center;margin:3px 0 17px;gap:10px}.eyebrow{font-size:10px;letter-spacing:1.5px;color:#D6AD50;font-weight:850}.welcome h1{font-size:25px;margin:5px 0}.welcome p{margin:0;color:var(--muted);font-size:13px}.live-pill{background:#3a1515;color:#ff9292;border-radius:20px;padding:8px 11px;font-size:10px;font-weight:800;white-space:nowrap}
-.stories{display:flex;gap:13px;overflow:auto;padding:4px 0 16px}.story{flex:0 0 64px;text-align:center;font-size:11px;color:#c9bea3}.story-ring{width:58px;height:58px;margin:auto auto 5px;padding:3px;border-radius:50%;background:linear-gradient(140deg,#f3d47c,#9c6b1b)}.story-ring span{display:grid;place-items:center;width:100%;height:100%;border:3px solid var(--panel);border-radius:50%;background:#392d19;font-size:22px}
-.composer{padding:15px;margin-bottom:16px}.compose-top{display:flex;align-items:center;gap:10px}.compose-top input{flex:1;min-width:0;border:0;border-radius:25px;background:#26231d;padding:13px 15px;color:var(--text);outline:none}.compose-actions{display:flex;gap:8px;flex-wrap:wrap;border-top:1px solid var(--line);margin-top:13px;padding-top:11px}.compose-actions button,.post-buttons button{border:0;background:transparent;color:#c9bea3;font-size:12px;font-weight:750;padding:9px 11px;border-radius:9px}.compose-actions button:hover,.post-buttons button:hover{background:#ffffff0d}
-.post{padding:15px;margin-bottom:15px}.post-head{display:flex;align-items:center;gap:10px}.post-head .avatar{flex:0 0 40px}.post-author{font-size:13px;font-weight:850}.post-meta{font-size:11px;color:#9e967f;margin-top:3px}.more{margin-left:auto;background:transparent;border:0;color:#c9bea3;font-size:22px}.post-text{font-size:14px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere;margin:13px 0}.post-media{width:100%;max-height:600px;object-fit:contain;background:#080808;border-radius:13px;display:block}.post-media.video{max-height:520px}.post-stats{display:flex;justify-content:space-between;gap:8px;color:#aaa18d;font-size:11px;padding:11px 2px;border-bottom:1px solid var(--line)}.post-buttons{display:flex;justify-content:space-around;flex-wrap:wrap;padding-top:7px}.post-buttons button.liked{color:#E8C66A}.comments{display:none;padding-top:10px}.comments.open{display:block}.comment-list{display:grid;gap:8px;margin:8px 0}.comment{background:#242019;border-radius:11px;padding:9px 11px;font-size:12px;line-height:1.5}.comment b{color:#E8C66A;margin-right:5px}.comment-form{display:flex;gap:7px}.comment-form input{min-width:0;flex:1;border:1px solid #51452d;border-radius:20px;padding:10px 13px;background:transparent;color:var(--text)}.comment-form button{border:0;border-radius:20px;padding:0 14px;background:var(--gold2);color:#15110a;font-weight:800}
-.rightcol{position:sticky;top:86px;display:grid;gap:15px}.right-card{padding:16px}.card-title{font-size:14px;font-weight:850;margin-bottom:12px}.creator-row{display:flex;align-items:center;gap:9px;margin:12px 0}.creator-row b{font-size:12px;display:block}.creator-row small{font-size:10px;color:#aaa18d}.follow{margin-left:auto;border:1px solid #9d7a35;color:#E8C66A;background:transparent;border-radius:9px;padding:6px 9px;font-size:10px;font-weight:800}
-.overlay{display:none;position:fixed;inset:0;background:#000b;z-index:30;align-items:center;justify-content:center;padding:15px}.overlay.show{display:flex}.modal{width:min(540px,100%);max-height:90vh;overflow:auto;background:#191919;color:var(--text);border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:0 25px 80px #0008}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}.modal-head h2{font-size:19px;margin:0}.close{border:0;background:transparent;color:inherit;font-size:25px}.modal textarea,.auth-fields input{width:100%;border:1px solid #51452d;border-radius:12px;padding:12px;background:#111;color:var(--text);outline:none}.modal textarea{min-height:115px;resize:vertical}.file-label{display:block;border:1px dashed #9d7a35;border-radius:12px;padding:14px;text-align:center;margin-top:12px;color:#E8C66A;font-size:13px;cursor:pointer}.file-label input{display:none}.file-hint{font-size:11px;color:#aaa18d;margin-top:8px;line-height:1.5}.preview{display:none;width:100%;max-height:240px;object-fit:contain;margin-top:10px;border-radius:12px;background:#080808}.modal-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:14px}.primary-btn{background:#E8C66A;color:#15110A;border:0;border-radius:11px;padding:11px 15px;font-weight:850}.secondary-btn{background:#29251d;color:#eee0bd;border:1px solid #51452d;border-radius:11px;padding:10px 14px;font-weight:750}.auth-fields{display:grid;gap:10px}.auth-switch{border:0;background:transparent;color:#E8C66A;font-weight:800;padding:12px 0}.demo-note{font-size:11px;color:#aaa18d;line-height:1.5}.toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,20px);background:#2b2110;color:#f8e8bd;padding:12px 18px;border-radius:30px;font-size:12px;font-weight:750;opacity:0;transition:.25s;z-index:50;pointer-events:none;max-width:90vw;text-align:center}.toast.show{opacity:1;transform:translate(-50%,0)}
-@media(max-width:1050px){.layout{grid-template-columns:175px minmax(0,1fr)}.rightcol{display:none}}
-@media(max-width:700px){.topbar{height:58px;padding:0 11px}.brand{font-size:21px}.search{display:none}.top-actions button{padding:8px}.layout{display:block;padding:14px 10px 25px}.sidebar{position:static;display:flex;overflow:auto;margin-bottom:14px;padding:6px;gap:4px}.nav-item{white-space:nowrap;padding:9px;font-size:11px}.side-note{display:none}.welcome h1{font-size:21px}.post{padding:12px}.post-buttons button{padding:8px 6px;font-size:11px}}
+:root{
+  --bg:#090909;--surface:#141414;--surface2:#1c1a16;
+  --gold:#d8b35d;--gold2:#f1d995;--text:#f7f4ed;
+  --muted:#99958b;--line:#30291c;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);
+font-family:Arial,Helvetica,sans-serif}
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+header{
+  height:72px;position:sticky;top:0;z-index:10;
+  background:#101010;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 5%;gap:15px
+}
+.brand{font-size:27px;font-weight:900;letter-spacing:4px;color:var(--gold)}
+.brand small{display:block;font-size:8px;letter-spacing:2px;color:#aaa}
+.goldbtn{
+  background:linear-gradient(120deg,var(--gold2),#b88935);
+  color:#17130a;border:0;border-radius:10px;padding:12px 19px;
+  font-weight:bold
+}
+.layout{
+  max-width:1250px;margin:25px auto;padding:0 18px;
+  display:grid;grid-template-columns:210px minmax(0,680px) 250px;
+  gap:20px
+}
+.panel,.post{
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:17px;padding:17px;margin-bottom:16px
+}
+.menu-title{font-size:11px;letter-spacing:2px;color:var(--muted);margin:8px}
+.menu a{
+  display:block;padding:13px 12px;border-radius:10px;
+  color:#ddd;text-decoration:none;margin:3px 0
+}
+.menu a:hover,.menu a.active{background:#292316;color:var(--gold2)}
+.hero{
+  padding:24px;border-radius:17px;margin-bottom:16px;
+  background:radial-gradient(circle at 90% 10%,#665022 0,#272014 35%,#141414 75%);
+  border:1px solid #554323
+}
+.hero h1{font-size:25px;margin:0 0 9px}
+.hero p{color:#d0c4a8;line-height:1.5;margin:0}
+.section-title{font-size:17px;margin:0 0 14px}
+.muted{color:var(--muted);font-size:13px}
+.avatar{
+  width:42px;height:42px;border-radius:13px;
+  display:grid;place-items:center;background:#382c16;
+  color:var(--gold2);font-weight:bold;flex-shrink:0
+}
+.composer-row{display:flex;gap:12px;align-items:center}
+.composer-trigger{
+  width:100%;text-align:left;background:#0b0b0b;
+  color:#aaa;border:1px solid #37312a;
+  border-radius:12px;padding:14px
+}
+.quick-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
+.quick-actions button,.action-btn{
+  background:transparent;border:1px solid var(--line);
+  color:#d5c9ad;border-radius:9px;padding:9px 12px
+}
+.post-head{display:flex;align-items:center;gap:11px}
+.post-name{font-weight:bold}
+.post-date{font-size:12px;color:var(--muted);margin-top:4px}
+.post-content{white-space:pre-wrap;overflow-wrap:anywhere;
+line-height:1.65;margin:17px 0}
+.post-media{width:100%;max-height:520px;object-fit:contain;
+background:#050505;border-radius:12px}
+.post-actions{
+  display:flex;gap:7px;flex-wrap:wrap;
+  border-top:1px solid var(--line);padding-top:12px;margin-top:12px
+}
+.post-actions button{
+  background:#1c1a16;color:#ddd;border:1px solid #332c20;
+  padding:9px 12px;border-radius:9px
+}
+.post-actions button:hover{color:var(--gold2);border-color:var(--gold)}
+.comment{padding:11px 0;border-bottom:1px solid #302c25;
+font-size:14px;line-height:1.5}
+.comment strong{color:var(--gold2)}
+.comment-form{display:flex;gap:8px;margin-top:12px}
+.comment-form input{
+  min-width:0;flex:1;background:#090909;color:white;
+  border:1px solid #39342b;border-radius:10px;padding:11px
+}
+.field{
+  display:block;width:100%;padding:13px;margin:9px 0;
+  border-radius:10px;background:#090909;color:white;
+  border:1px solid #39342b
+}
+textarea.field{resize:vertical;min-height:115px}
+.file-label{
+  display:inline-block;border:1px dashed #967431;
+  color:var(--gold2);padding:11px;border-radius:10px;cursor:pointer
+}
+.file-label input{display:none}
+#preview img,#preview video{
+  width:100%;max-height:240px;object-fit:contain;
+  margin-top:12px;border-radius:10px
+}
+.hidden{display:none!important}
+.empty{text-align:center;padding:30px;color:var(--muted)}
+.stat{font-size:24px;color:var(--gold2);font-weight:bold}
+.modal{
+  position:fixed;inset:0;background:#000c;z-index:20;
+  display:grid;place-items:center;padding:15px
+}
+.modal-card{
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:17px;padding:20px;width:min(560px,100%);
+  max-height:90vh;overflow:auto
+}
+.modal-head{display:flex;justify-content:space-between;align-items:center}
+.close{background:transparent;border:0;color:white;font-size:22px}
+.auth-card{max-width:440px;margin:55px auto;padding:25px}
+.footer-note{font-size:11px;color:#777;line-height:1.6}
+@media(max-width:950px){
+  .layout{grid-template-columns:190px minmax(0,1fr)}
+  .rightbar{display:none}
+}
+@media(max-width:650px){
+  header{height:62px;padding:0 14px}
+  .brand{font-size:23px}
+  .layout{display:block;margin:12px auto;padding:0 10px}
+  .leftbar{display:none}
+  .hero{padding:19px}
+  .hero h1{font-size:21px}
+  .panel,.post{padding:14px;border-radius:14px}
+  .post-actions button{flex:1;font-size:12px;padding:9px 5px}
+  .goldbtn{padding:10px 13px}
+}
 </style>
 </head>
 <body>
-<header class="topbar">
-  <div class="brand"><div class="brand-mark">G</div>GOVI</div>
-  <div class="search"><input id="searchInput" placeholder="Buscar publicaciones…"></div>
-  <div class="top-actions"><button onclick="openModal('postModal')">＋ Crear</button><button onclick="toast('No tienes notificaciones nuevas')">♧</button><button class="avatar" id="accountButton" onclick="openModal('authModal')">G</button></div>
+
+<header>
+  <div class="brand">GOVI<small>TU MUNDO · TU COMUNIDAD</small></div>
+  <button class="goldbtn" onclick="openComposer()">＋ Crear</button>
 </header>
-<div class="layout">
-  <aside class="sidebar panel">
-    <div class="nav-item active" onclick="filterSection('Inicio',this)">⌂ Inicio</div>
-    <div class="nav-item" onclick="filterSection('Fotos',this)">▧ Fotos</div>
-    <div class="nav-item" onclick="filterSection('Vídeos',this)">▷ Vídeos</div>
-    <div class="nav-item" onclick="filterSection('Mi perfil',this)">♙ Mi perfil</div>
-    <div class="side-note"><b>Tu comunidad, tus oportunidades.</b><br>Comparte lo que te mueve y crece a tu ritmo.</div>
+
+<section id="auth" class="panel auth-card">
+  <div class="brand">GOVI</div>
+  <h2>Entrá a tu comunidad</h2>
+  <p class="muted">Un espacio para compartir lo que sos.</p>
+  <input id="email" class="field" type="email" placeholder="Correo electrónico">
+  <input id="password" class="field" type="password" placeholder="Contraseña">
+  <button class="goldbtn" style="width:100%" onclick="signIn()">Iniciar sesión</button>
+  <p class="muted">¿Todavía no tenés cuenta?
+    <a href="#" style="color:var(--gold2)" onclick="signUp();return false">Registrarme</a>
+  </p>
+  <p id="authMessage" class="muted"></p>
+</section>
+
+<div id="app" class="layout hidden">
+
+  <aside class="leftbar">
+    <div class="panel menu">
+      <div class="menu-title">EXPLORÁ GOVI</div>
+      <a class="active" href="#" onclick="return false">⌂ Inicio</a>
+      <a href="#" onclick="return false">✧ Descubrir</a>
+      <a href="#" onclick="return false">▷ Videos</a>
+      <a href="#" onclick="return false">◉ Directos</a>
+      <a href="#" onclick="return false">♙ Mi perfil</a>
+      <a href="#" onclick="return false">▤ Guardados</a>
+      <a href="#" onclick="return false">✉ Mensajes</a>
+      <div class="menu-title" style="margin-top:20px">TU CUENTA</div>
+      <a href="#" onclick="signOut();return false">↪ Cerrar sesión</a>
+    </div>
   </aside>
-  <main class="content">
-    <div class="welcome"><div><div class="eyebrow">TU COMUNIDAD TE ESPERA</div><h1>¡Bienvenido a GOVI! 👋</h1><p>Comparte fotos, vídeos e ideas con tu comunidad.</p></div><div class="live-pill">● GOVI</div></div>
-    <div class="stories"><div class="story" onclick="openModal('postModal')"><div class="story-ring"><span>＋</span></div>Tu historia</div><div class="story"><div class="story-ring"><span>🌍</span></div>Comunidad</div><div class="story"><div class="story-ring"><span>🎥</span></div>Creadores</div></div>
-    <section class="composer panel">
-      <div class="compose-top"><div class="avatar" id="composerAvatar">G</div><input placeholder="¿Qué quieres compartir hoy?" onclick="openModal('postModal')" readonly></div>
-      <div class="compose-actions"><button onclick="openModal('postModal')">▧ Foto / vídeo</button><button onclick="openModal('postModal')">☷ Crear publicación</button></div>
-    </section>
-    <div id="feed"><p class="demo-note">Cargando publicaciones de GOVI…</p></div>
+
+  <main>
+    <div class="hero">
+      <h1>Este es tu mundo.</h1>
+      <p>Compartí tus momentos, conocé nuevas personas y hacé crecer tu comunidad. Bienvenido a GOVI.</p>
+    </div>
+
+    <div class="panel">
+      <h3 class="section-title">Compartí algo con la comunidad</h3>
+      <div class="composer-row">
+        <div class="avatar" id="myAvatar">G</div>
+        <button class="composer-trigger" onclick="openComposer()">¿Qué querés compartir hoy?</button>
+      </div>
+      <div class="quick-actions">
+        <button onclick="openComposer()">▧ Foto o vídeo</button>
+        <button onclick="openComposer()">✎ Escribir algo</button>
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <h3 class="section-title">El movimiento de GOVI</h3>
+      <span class="muted">Publicaciones recientes</span>
+    </div>
+    <div id="feed"><div class="empty">Cargando publicaciones…</div></div>
   </main>
-  <aside class="rightcol">
-    <section class="panel right-card"><div class="card-title">Bienvenido a GOVI</div><p class="demo-note">Publica tus momentos, conversa con otros usuarios y construye tu comunidad.</p></section>
-    <section class="panel right-card"><div class="card-title">Creadores para descubrir</div><div class="creator-row"><div class="avatar">G</div><div><b>Comunidad GOVI</b><small>Tu mundo. Tu gente.</small></div></div></section>
+
+  <aside class="rightbar">
+    <div class="panel">
+      <h3 class="section-title">La esencia GOVI</h3>
+      <div class="stat">G</div>
+      <p class="muted">Una comunidad con identidad propia. Un lugar para expresarte y conectar.</p>
+    </div>
+    <div class="panel">
+      <h3 class="section-title">Tu sesión</h3>
+      <p class="muted" id="accountEmail"></p>
+      <button class="action-btn" onclick="signOut()">Cerrar sesión</button>
+    </div>
+    <p class="footer-note">GOVI · Tu mundo, tu comunidad.</p>
   </aside>
 </div>
 
-<div class="overlay" id="postModal"><div class="modal">
-  <div class="modal-head"><h2 id="postModalTitle">Crear publicación</h2><button class="close" onclick="closeModal('postModal')">×</button></div>
-  <textarea id="postText" placeholder="¿Qué quieres compartir con tu comunidad?"></textarea>
-  <label class="file-label">＋ Añadir fotografía o vídeo<input id="mediaFile" type="file" accept="image/*,video/*"></label>
-  <div class="file-hint">Formatos habituales de imagen y vídeo. Límite recomendado: 50 MB por archivo. Los vídeos grandes pueden tardar en subir según tu conexión.</div>
-  <img id="imagePreview" class="preview" alt="Vista previa">
-  <video id="videoPreview" class="preview" controls playsinline></video>
-  <div class="modal-actions"><button class="secondary-btn" onclick="resetComposer();closeModal('postModal')">Cancelar</button><button class="primary-btn" id="publishButton" onclick="publishPost()">Publicar</button></div>
-  <p class="demo-note">Para publicar necesitas iniciar sesión. Tus publicaciones se guardarán en la base de datos GOVI.</p>
-</div></div>
+<div id="composerModal" class="modal hidden">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3>Crear publicación</h3>
+      <button class="close" onclick="closeComposer()">×</button>
+    </div>
+    <textarea id="postText" class="field" placeholder="Contale algo a la comunidad…"></textarea>
+    <label class="file-label">
+      ＋ Elegir foto o vídeo
+      <input id="mediaFile" type="file" accept="image/*,video/*">
+    </label>
+    <div id="preview"></div>
+    <p id="postMessage" class="muted"></p>
+    <button class="goldbtn" style="width:100%;margin-top:14px" onclick="publishPost()">Publicar en GOVI</button>
+  </div>
+</div>
 
-<div class="overlay" id="authModal"><div class="modal">
-  <div class="modal-head"><h2 id="authTitle">Únete a GOVI</h2><button class="close" onclick="closeModal('authModal')">×</button></div>
-  <div class="auth-fields"><input id="authName" placeholder="Tu nombre" autocomplete="name"><input id="authEmail" type="email" placeholder="Correo electrónico" autocomplete="email"><input id="authPassword" type="password" placeholder="Contraseña (mínimo 8 caracteres)" autocomplete="new-password"></div>
-  <div class="modal-actions"><button class="primary-btn" id="authSubmit" onclick="handleAuth()">Crear cuenta</button></div>
-  <button class="auth-switch" id="authSwitch" onclick="toggleAuthMode()">Ya tengo una cuenta · Iniciar sesión</button>
-  <p class="demo-note">En el registro, Supabase puede pedirte confirmar tu correo electrónico.</p>
-</div></div>
-<div class="toast" id="toast"></div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL='https://ennfigjdboxpkmfhttze.supabase.co';
-const SUPABASE_PUBLISHABLE_KEY='sb_publishable_Jhya35mcZXssCNI9u3uzNQ_CfcvaTyH';
-const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
-const BUCKET='govi-media';
-let currentUser=null, authMode='register', selectedFile=null, activeFilter='Inicio';
-const $=id=>document.getElementById(id);
-function toast(message){const el=$('toast');el.textContent=message;el.classList.add('show');clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>el.classList.remove('show'),3000)}
-function openModal(id){$(id).classList.add('show')}
-function closeModal(id){$(id).classList.remove('show')}
-function escapeHTML(value=''){return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function initials(name='G'){return name.trim().split(/\s+/).slice(0,2).map(x=>x[0]).join('').toUpperCase()||'G'}
-function timeLabel(date){return new Date(date).toLocaleString('es-ES',{dateStyle:'short',timeStyle:'short'})}
-function resetComposer(){$('postText').value='';$('mediaFile').value='';selectedFile=null;$('imagePreview').style.display='none';$('videoPreview').style.display='none';$('imagePreview').src='';$('videoPreview').src='';$('postModalTitle').textContent='Crear publicación';$('publishButton').textContent='Publicar';$('publishButton').dataset.editId=''}
-$('mediaFile').addEventListener('change',e=>{
-  selectedFile=e.target.files[0]||null;
-  $('imagePreview').style.display='none';$('videoPreview').style.display='none';
+const SUPABASE_URL = 'https://ennfigjdboxpkmfhttze.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_Jhya35mcZXssCNI9u3uzNQ_CfcvaTyH';
+const db = window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+let currentUser = null;
+let selectedFile = null;
+
+const $ = id => document.getElementById(id);
+
+function escapeHTML(value){
+  return String(value ?? '').replace(/[&<>"']/g, char => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  })[char]);
+}
+
+async function signIn(){
+  $('authMessage').textContent='Conectando…';
+  const {data,error}=await db.auth.signInWithPassword({
+    email:$('email').value.trim(),
+    password:$('password').value
+  });
+  if(error){$('authMessage').textContent=error.message;return;}
+  currentUser=data.user;
+  await showApp();
+}
+
+async function signUp(){
+  $('authMessage').textContent='Creando cuenta…';
+  const {data,error}=await db.auth.signUp({
+    email:$('email').value.trim(),
+    password:$('password').value
+  });
+  if(error){$('authMessage').textContent=error.message;return;}
+  if(data.session){
+    currentUser=data.user;
+    await showApp();
+  }else{
+    $('authMessage').textContent='Cuenta creada. Revisá tu correo para confirmar el registro.';
+  }
+}
+
+async function signOut(){
+  await db.auth.signOut();
+  currentUser=null;
+  $('app').classList.add('hidden');
+  $('auth').classList.remove('hidden');
+}
+
+async function showApp(){
+  $('auth').classList.add('hidden');
+  $('app').classList.remove('hidden');
+  $('accountEmail').textContent=currentUser.email || 'Cuenta conectada';
+  $('myAvatar').textContent=(currentUser.email || 'G').charAt(0).toUpperCase();
+  await loadPosts();
+}
+
+function openComposer(){
+  $('composerModal').classList.remove('hidden');
+}
+function closeComposer(){
+  $('composerModal').classList.add('hidden');
+  $('postText').value='';
+  $('mediaFile').value='';
+  $('preview').innerHTML='';
+  $('postMessage').textContent='';
+  selectedFile=null;
+}
+
+$('mediaFile').addEventListener('change',event=>{
+  selectedFile=event.target.files[0] || null;
+  $('preview').innerHTML='';
+  $('postMessage').textContent='';
   if(!selectedFile)return;
-  if(selectedFile.size>50*1024*1024){toast('El archivo supera los 50 MB. Elige uno más pequeño.');e.target.value='';selectedFile=null;return}
+
+  if(selectedFile.size > 50*1024*1024){
+    selectedFile=null;
+    event.target.value='';
+    $('postMessage').textContent='El archivo supera el límite de 50 MB.';
+    return;
+  }
+  if(!selectedFile.type.startsWith('image/') &&
+     !selectedFile.type.startsWith('video/')){
+    selectedFile=null;
+    event.target.value='';
+    $('postMessage').textContent='Elegí una imagen o un vídeo válido.';
+    return;
+  }
+
   const url=URL.createObjectURL(selectedFile);
-  if(selectedFile.type.startsWith('image/')){$('imagePreview').src=url;$('imagePreview').style.display='block'}
-  else if(selectedFile.type.startsWith('video/')){$('videoPreview').src=url;$('videoPreview').style.display='block'}
-  else{toast('Formato de archivo no compatible');selectedFile=null}
+  const preview=document.createElement(
+    selectedFile.type.startsWith('video/')?'video':'img'
+  );
+  preview.src=url;
+  if(preview.tagName==='VIDEO'){
+    preview.controls=true;
+    preview.playsInline=true;
+  }
+  $('preview').appendChild(preview);
 });
-async function uploadMedia(file,userId){
-  const ext=(file.name.split('.').pop()||'bin').toLowerCase().replace(/[^a-z0-9]/g,'');
-  const path=`${userId}/${Date.now()}-${crypto.randomUUID()}.${ext}`;
-  const {error}=await supabaseClient.storage.from(BUCKET).upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type});
-  if(error)throw error;
-  const {data}=supabaseClient.storage.from(BUCKET).getPublicUrl(path);
-  return {url:data.publicUrl,type:file.type.startsWith('video/')?'video':'image',path};
-}
+
 async function publishPost(){
-  if(!currentUser){toast('Inicia sesión para publicar');openModal('authModal');return}
-  const content=$('postText').value.trim(), editId=$('publishButton').dataset.editId;
-  if(!content&&!selectedFile&&!editId){toast('Escribe algo o añade una foto/vídeo');return}
-  const button=$('publishButton');button.disabled=true;button.textContent=editId?'Guardando…':'Publicando…';
-  try{
-    let media={url:null,type:null,path:null};
-    if(selectedFile)media=await uploadMedia(selectedFile,currentUser.id);
-    if(editId){
-      const update={content,updated_at:new Date().toISOString()};
-      if(selectedFile){update.media_url=media.url;update.media_type=media.type;update.media_path=media.path}
-      const {error}=await supabaseClient.from('posts').update(update).eq('id',editId).eq('user_id',currentUser.id);
-      if(error)throw error;
-      toast('Publicación actualizada');
-    }else{
-      const {error}=await supabaseClient.from('posts').insert({user_id:currentUser.id,content,media_url:media.url,media_type:media.type,media_path:media.path});
-      if(error)throw error;
-      toast('¡Publicación compartida en GOVI!');
+  const content=$('postText').value.trim();
+  if(!content && !selectedFile){
+    $('postMessage').textContent='Escribí algo o elegí una foto o vídeo.';
+    return;
+  }
+  if(!currentUser){
+    $('postMessage').textContent='Primero iniciá sesión.';
+    return;
+  }
+
+  $('postMessage').textContent='Publicando…';
+  let media_url=null;
+
+  if(selectedFile){
+    const safeName=selectedFile.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+    const path=currentUser.id+'/'+Date.now()+'_'+safeName;
+
+    const {error:uploadError}=await db.storage
+      .from('govi-media')
+      .upload(path,selectedFile,{
+        contentType:selectedFile.type,
+        upsert:false
+      });
+
+    if(uploadError){
+      $('postMessage').textContent='Error al subir el archivo: '+uploadError.message;
+      return;
     }
-    resetComposer();closeModal('postModal');await loadFeed();
-  }catch(error){console.error(error);toast('No se pudo guardar: '+(error.message||'revisa la configuración de Supabase'))}
-  finally{button.disabled=false;button.textContent=$('publishButton').dataset.editId?'Guardar cambios':'Publicar'}
+
+    media_url=db.storage.from('govi-media').getPublicUrl(path).data.publicUrl;
+  }
+
+  const {error}=await db.from('posts').insert({
+    user_id:currentUser.id,
+    content:content,
+    media_url:media_url
+  });
+
+  if(error){
+    $('postMessage').textContent='No se pudo publicar: '+error.message;
+    return;
+  }
+
+  closeComposer();
+  await loadPosts();
 }
-async function loadFeed(){
-  const feed=$('feed');feed.innerHTML='<p class="demo-note">Cargando publicaciones…</p>';
-  const {data:posts,error}=await supabaseClient.from('posts').select('id,user_id,content,media_url,media_type,media_path,created_at,updated_at').order('created_at',{ascending:false}).limit(100);
-  if(error){console.error(error);feed.innerHTML='<p class="demo-note">No se pudieron cargar las publicaciones. Comprueba que ejecutaste el SQL de configuración en Supabase.</p>';return}
-  if(!posts?.length){feed.innerHTML='<section class="panel" style="padding:22px;text-align:center"><b>¡Bienvenido a GOVI!</b><p class="demo-note">Todavía no hay publicaciones. Sé el primero en compartir una foto, un vídeo o una idea.</p></section>';return}
-  const ids=posts.map(p=>p.id);
-  const [{data:likes},{data:comments}]=await Promise.all([
-    supabaseClient.from('post_likes').select('post_id,user_id').in('post_id',ids),
-    supabaseClient.from('post_comments').select('id,post_id,user_id,content,created_at').in('post_id',ids).order('created_at',{ascending:true})
-  ]);
-  const userIds=[...new Set([...(likes||[]).map(x=>x.user_id),...(comments||[]).map(x=>x.user_id),...posts.map(x=>x.user_id)])];
-  let profiles={};
-  if(userIds.length){const {data}=await supabaseClient.from('profiles').select('id,display_name').in('id',userIds);(data||[]).forEach(p=>profiles[p.id]=p.display_name)}
-  feed.replaceChildren();
-  posts.forEach(post=>feed.append(renderPost(post,likes||[],comments||[],profiles)));
-  applyFilter();
+
+async function loadPosts(){
+  const feed=$('feed');
+  feed.innerHTML='<div class="empty">Cargando publicaciones…</div>';
+
+  const {data,error}=await db.from('posts')
+    .select('id,user_id,content,media_url,created_at')
+    .order('created_at',{ascending:false})
+    .limit(50);
+
+  if(error){
+    feed.textContent='Error al cargar publicaciones: '+error.message;
+    return;
+  }
+
+  feed.innerHTML='';
+  if(!data || data.length===0){
+    feed.innerHTML='<div class="panel empty">Todavía no hay publicaciones. ¡Inaugurá GOVI compartiendo algo!</div>';
+    return;
+  }
+
+  for(const post of data){
+    feed.appendChild(await createPostCard(post));
+  }
 }
-function renderPost(post,likes,comments,profiles){
-  const mine=currentUser&&post.user_id===currentUser.id;
-  const postLikes=likes.filter(x=>x.post_id===post.id), postComments=comments.filter(x=>x.post_id===post.id);
-  const liked=!!currentUser&&postLikes.some(x=>x.user_id===currentUser.id);
-  const author=profiles[post.user_id]|| (mine?'Tú':'Usuario GOVI');
-  const article=document.createElement('article');article.className='post panel';article.dataset.kind=post.media_type||'text';article.dataset.search=(author+' '+(post.content||'')).toLowerCase();
+
+async function createPostCard(post){
+  const card=document.createElement('article');
+  card.className='post';
+
   let media='';
   if(post.media_url){
-    media=post.media_type==='video'
-      ? `<video class="post-media video" controls playsinline preload="metadata" src="${escapeHTML(post.media_url)}"></video>`
-      : `<img class="post-media" loading="lazy" src="${escapeHTML(post.media_url)}" alt="Fotografía compartida en GOVI">`;
+    const isVideo=/\.(mp4|webm|mov|m4v)(\?|$)/i.test(post.media_url);
+    media=isVideo
+      ? `<video class="post-media" src="${escapeHTML(post.media_url)}" controls playsinline></video>`
+      : `<img class="post-media" src="${escapeHTML(post.media_url)}" alt="Imagen compartida">`;
   }
-  const commentHTML=postComments.map(c=>`<div class="comment"><b>${escapeHTML(profiles[c.user_id]||'Usuario')}</b>${escapeHTML(c.content)}<div class="post-meta">${timeLabel(c.created_at)}</div></div>`).join('');
-  article.innerHTML=`
-    <div class="post-head"><div class="avatar">${escapeHTML(initials(author))}</div><div><div class="post-author">${escapeHTML(author)}${mine?' · Tú':''}</div><div class="post-meta">${timeLabel(post.created_at)} · Público</div></div>
-    ${mine?`<button class="more" aria-label="Opciones" data-action="manage" data-id="${post.id}">···</button>`:''}</div>
-    ${post.content?`<p class="post-text">${escapeHTML(post.content)}</p>`:''}${media}
-    <div class="post-stats"><span>💛 ${postLikes.length} Me gusta</span><span>${postComments.length} comentarios</span></div>
-    <div class="post-buttons"><button class="${liked?'liked':''}" data-action="like" data-id="${post.id}">${liked?'♥ Te gusta':'♡ Me gusta'}</button><button data-action="comments" data-id="${post.id}">◯ Comentar</button><button data-action="share" data-id="${post.id}">↗ Compartir</button></div>
-    <div class="comments" id="comments-${post.id}"><div class="comment-list">${commentHTML||'<p class="demo-note">Sé el primero en comentar.</p>'}</div><div class="comment-form"><input maxlength="1000" placeholder="Escribe un comentario…" ${currentUser?'':'disabled'}><button data-action="send-comment" data-id="${post.id}" ${currentUser?'':'disabled'}>Enviar</button></div></div>`;
-  return article;
-}
-$('feed').addEventListener('click',async e=>{
-  const btn=e.target.closest('[data-action]');if(!btn)return;
-  const {action,id}=btn.dataset;
-  if(action==='like')return toggleLike(id);
-  if(action==='comments'){const area=$('comments-'+id);area.classList.toggle('open');if(area.classList.contains('open'))area.querySelector('input')?.focus();return}
-  if(action==='share')return sharePost(id);
-  if(action==='manage')return managePost(id);
-  if(action==='send-comment')return addComment(id,btn);
-});
-$('feed').addEventListener('keydown',e=>{
-  if(e.key==='Enter'&&e.target.matches('.comment-form input')){
-    const btn=e.target.parentElement.querySelector('button');addComment(btn.dataset.id,btn);
+
+  card.innerHTML=`
+    <div class="post-head">
+      <div class="avatar">G</div>
+      <div>
+        <div class="post-name">${post.user_id===currentUser.id?'Tu publicación':'Miembro de GOVI'}</div>
+        <div class="post-date">${escapeHTML(new Date(post.created_at).toLocaleString('es-ES'))} · Público</div>
+      </div>
+    </div>
+    <div class="post-content">${escapeHTML(post.content || '')}</div>
+    ${media}
+    <div class="post-actions">
+      <button data-like>♡ Me gusta</button>
+      <button data-comment>◯ Comentarios</button>
+      <button data-share>↗ Compartir</button>
+      ${post.user_id===currentUser.id?'<button data-delete>Eliminar</button>':''}
+    </div>
+    <div class="comments-area"></div>
+  `;
+
+  card.querySelector('[data-like]').addEventListener('click',()=>toggleLike(post.id,card));
+  card.querySelector('[data-comment]').addEventListener('click',()=>showComments(post.id,card));
+  card.querySelector('[data-share]').addEventListener('click',()=>sharePost(post));
+
+  const deleteButton=card.querySelector('[data-delete]');
+  if(deleteButton){
+    deleteButton.addEventListener('click',()=>deletePost(post.id));
   }
-});
-async function toggleLike(postId){
-  if(!currentUser){toast('Inicia sesión para dar Me gusta');openModal('authModal');return}
-  const {data:existing,error:findError}=await supabaseClient.from('post_likes').select('post_id').eq('post_id',postId).eq('user_id',currentUser.id).maybeSingle();
-  if(findError){toast('No se pudo comprobar el Me gusta: '+findError.message);return}
-  let error;
-  if(existing){({error}=await supabaseClient.from('post_likes').delete().eq('post_id',postId).eq('user_id',currentUser.id))}
-  else{({error}=await supabaseClient.from('post_likes').insert({post_id:postId,user_id:currentUser.id}))}
-  if(error){toast('No se pudo actualizar Me gusta: '+error.message);return}
-  await loadFeed();
+
+  return card;
 }
-async function addComment(postId,button){
-  if(!currentUser){toast('Inicia sesión para comentar');openModal('authModal');return}
-  const input=button.parentElement.querySelector('input'),content=input.value.trim();if(!content)return;
-  button.disabled=true;
-  const {error}=await supabaseClient.from('post_comments').insert({post_id:postId,user_id:currentUser.id,content});
-  button.disabled=false;
-  if(error){toast('No se pudo comentar: '+error.message);return}
-  await loadFeed();$('comments-'+postId)?.classList.add('open');toast('Comentario publicado');
+
+async function toggleLike(postId,card){
+  const {data:existing,error:searchError}=await db.from('post_likes')
+    .select('id')
+    .eq('post_id',postId)
+    .eq('user_id',currentUser.id)
+    .maybeSingle();
+
+  if(searchError){alert(searchError.message);return;}
+
+  let result;
+  if(existing){
+    result=await db.from('post_likes').delete().eq('id',existing.id);
+  }else{
+    result=await db.from('post_likes').insert({
+      post_id:postId,
+      user_id:currentUser.id
+    });
+  }
+
+  if(result.error){alert(result.error.message);return;}
+  card.querySelector('[data-like]').textContent=existing?'♡ Me gusta':'♥ Te gusta';
 }
-async function sharePost(id){
-  const url=location.origin+location.pathname+'#post-'+id;
-  try{
-    if(navigator.share){await navigator.share({title:'GOVI',text:'Mira esta publicación en GOVI',url})}
-    else if(navigator.clipboard){await navigator.clipboard.writeText(url);toast('Enlace copiado para compartir')}
-    else{prompt('Copia este enlace:',url)}
-  }catch(e){if(e.name!=='AbortError')toast('No se pudo compartir el enlace')}
-}
-async function managePost(id){
-  const choice=prompt('Escribe EDITAR o ELIMINAR:');if(!choice)return;
-  const {data:post,error}=await supabaseClient.from('posts').select('*').eq('id',id).eq('user_id',currentUser.id).single();
-  if(error||!post){toast('No se encontró tu publicación');return}
-  if(choice.trim().toLowerCase()==='editar'){
-    resetComposer();$('postModalTitle').textContent='Editar publicación';$('postText').value=post.content||'';$('publishButton').textContent='Guardar cambios';$('publishButton').dataset.editId=id;openModal('postModal');
-  }else if(['eliminar','borrar'].includes(choice.trim().toLowerCase())){
-    if(!confirm('¿Seguro que quieres eliminar esta publicación?'))return;
-    const {error:deleteError}=await supabaseClient.from('posts').delete().eq('id',id).eq('user_id',currentUser.id);
-    if(deleteError){toast('No se pudo eliminar: '+deleteError.message);return}
-    if(post.media_path)await supabaseClient.storage.from(BUCKET).remove([post.media_path]);
-    toast('Publicación eliminada');await loadFeed();
-  }else toast('Opción no reconocida. Escribe EDITAR o ELIMINAR.');
-}
-function toggleAuthMode(){
-  authMode=authMode==='register'?'login':'register';
-  $('authTitle').textContent=authMode==='register'?'Únete a GOVI':'Bienvenido de nuevo';
-  $('authName').style.display=authMode==='register'?'block':'none';
-  $('authPassword').autocomplete=authMode==='register'?'new-password':'current-password';
-  $('authSubmit').textContent=authMode==='register'?'Crear cuenta':'Iniciar sesión';
-  $('authSwitch').textContent=authMode==='register'?'Ya tengo una cuenta · Iniciar sesión':'No tengo cuenta · Registrarme';
-}
-async function handleAuth(){
-  const name=$('authName').value.trim(),email=$('authEmail').value.trim(),password=$('authPassword').value,button=$('authSubmit');
-  if(authMode==='register'&&!name){toast('Escribe tu nombre');return}
-  if(!email||!email.includes('@')){toast('Introduce un correo válido');return}
-  if(password.length<8){toast('La contraseña debe tener 8 caracteres como mínimo');return}
-  button.disabled=true;button.textContent='Conectando…';
-  try{
-    if(authMode==='register'){
-      const {data,error}=await supabaseClient.auth.signUp({email,password,options:{data:{display_name:name,full_name:name}}});
-      if(error)throw error;
-      if(data.user&&!data.session)toast('Registro enviado. Revisa tu correo para confirmar la cuenta.');
-      else toast('¡Cuenta creada en GOVI!');
-    }else{
-      const {error}=await supabaseClient.auth.signInWithPassword({email,password});
-      if(error)throw error;
-      toast('¡Bienvenido a GOVI!');
+
+async function showComments(postId,card){
+  const box=card.querySelector('.comments-area');
+  box.innerHTML='<p class="muted">Cargando comentarios…</p>';
+
+  const {data,error}=await db.from('post_comments')
+    .select('id,user_id,content,created_at')
+    .eq('post_id',postId)
+    .order('created_at',{ascending:true});
+
+  if(error){
+    box.textContent='No se pudieron cargar los comentarios: '+error.message;
+    return;
+  }
+
+  box.innerHTML='';
+  for(const comment of data){
+    const item=document.createElement('div');
+    item.className='comment';
+    item.innerHTML=`<strong>${comment.user_id===currentUser.id?'Vos':'Miembro'}</strong> ${escapeHTML(comment.content)}`;
+    box.appendChild(item);
+  }
+
+  const form=document.createElement('form');
+  form.className='comment-form';
+  form.innerHTML=`
+    <input maxlength="1000" placeholder="Escribí tu comentario…" required>
+    <button class="goldbtn" type="submit">Enviar</button>
+  `;
+
+  form.addEventListener('submit',async event=>{
+    event.preventDefault();
+    const input=form.querySelector('input');
+    const content=input.value.trim();
+    if(!content)return;
+
+    const button=form.querySelector('button');
+    button.disabled=true;
+
+    const {error:insertError}=await db.from('post_comments').insert({
+      post_id:postId,
+      user_id:currentUser.id,
+      content:content
+    });
+
+    if(insertError){
+      alert('No se pudo comentar: '+insertError.message);
+      button.disabled=false;
+      return;
     }
-    closeModal('authModal');await refreshSession();
-  }catch(error){toast(error.message||'No se pudo completar la operación')}
-  finally{button.disabled=false;button.textContent=authMode==='register'?'Crear cuenta':'Iniciar sesión'}
-}
-async function refreshSession(){
-  const {data:{session}}=await supabaseClient.auth.getSession();currentUser=session?.user||null;
-  const label=currentUser?.user_metadata?.display_name||currentUser?.user_metadata?.full_name||currentUser?.email||'G';
-  $('accountButton').textContent=initials(label);$('composerAvatar').textContent=initials(label);
-  await loadFeed();
-}
-function filterSection(section,el){
-  activeFilter=section;document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));el.classList.add('active');applyFilter();
-}
-function applyFilter(){
-  document.querySelectorAll('#feed .post').forEach(p=>{
-    const q=$('searchInput').value.toLowerCase(),matchesSearch=p.dataset.search.includes(q);
-    const matchesType=activeFilter==='Inicio'||activeFilter==='Mi perfil'||(activeFilter==='Fotos'&&p.dataset.kind==='image')||(activeFilter==='Vídeos'&&p.dataset.kind==='video');
-    const matchesMine=activeFilter!=='Mi perfil'||(currentUser&&p.querySelector('.post-author')?.textContent.includes('Tú'));
-    p.style.display=matchesSearch&&matchesType&&matchesMine?'block':'none';
+
+    await showComments(postId,card);
   });
+
+  box.appendChild(form);
 }
-$('searchInput').addEventListener('input',applyFilter);
-document.querySelectorAll('.overlay').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('show')}));
-supabaseClient.auth.onAuthStateChange(()=>{setTimeout(refreshSession,0)});
-refreshSession();
+
+async function deletePost(postId){
+  if(!confirm('¿Querés eliminar esta publicación?'))return;
+
+  const {error}=await db.from('posts').delete()
+    .eq('id',postId)
+    .eq('user_id',currentUser.id);
+
+  if(error){alert(error.message);return;}
+  await loadPosts();
+}
+
+async function sharePost(post){
+  const text=post.content || 'Mirá esta publicación en GOVI';
+  try{
+    if(navigator.share){
+      await navigator.share({title:'GOVI',text:text});
+    }else{
+      await navigator.clipboard.writeText(text);
+      alert('Texto copiado para compartir.');
+    }
+  }catch(error){}
+}
+
+(async()=>{
+  const {data,error}=await db.auth.getSession();
+  if(!error && data.session){
+    currentUser=data.session.user;
+    await showApp();
+  }
+})();
+
+db.auth.onAuthStateChange((event,session)=>{
+  if(session && (!currentUser || currentUser.id!==session.user.id)){
+    currentUser=session.user;
+    showApp();
+  }
+});
 </script>
 </body>
 </html>
