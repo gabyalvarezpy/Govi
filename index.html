@@ -140,6 +140,45 @@ textarea.field{resize:vertical;min-height:115px}
   .post-actions button{flex:1;font-size:12px;padding:9px 5px}
   .goldbtn{padding:10px 13px}
 }
+
+/* GOVI profile cover + stories */
+.profile-cover{position:relative;margin-bottom:78px}
+.cover-art{height:230px;border-radius:19px 19px 0 0;overflow:hidden;position:relative;
+background:radial-gradient(ellipse at 78% 18%,#8b6a2b 0,transparent 35%),
+linear-gradient(125deg,#17130c 0%,#382a16 48%,#0b0b0b 100%);
+border:1px solid #594522}
+.cover-art:before{content:"";position:absolute;inset:0;
+background:linear-gradient(90deg,#080808d9,transparent 75%),
+repeating-linear-gradient(135deg,transparent 0 34px,#ffffff08 35px 36px)}
+.cover-copy{position:absolute;left:30px;top:35px;z-index:1}
+.cover-copy .eyebrow{font-size:11px;letter-spacing:3px;color:var(--gold2);font-weight:bold}
+.cover-copy h1{font-size:clamp(25px,4vw,39px);margin:13px 0 8px;letter-spacing:1px}
+.cover-copy p{color:#ded2b8;margin:0;font-size:14px}
+.profile-meta{position:absolute;left:27px;right:22px;bottom:-65px;display:flex;align-items:end;gap:17px}
+.profile-photo{width:116px;height:116px;border-radius:50%;border:5px solid #111;
+background:linear-gradient(145deg,#d9b45f,#6b4c1e);display:grid;place-items:center;
+color:#17120a;font-size:38px;font-weight:900;box-shadow:0 8px 28px #0009;flex-shrink:0}
+.profile-name{padding-bottom:8px;min-width:0}
+.profile-name h2{font-size:22px;margin:0 0 5px}
+.profile-name p{font-size:13px;color:var(--muted);margin:0}
+.profile-tag{margin-left:auto;margin-bottom:8px;border:1px solid #6c5429;color:var(--gold2);
+border-radius:30px;padding:9px 14px;font-size:11px;letter-spacing:1px;white-space:nowrap}
+.stories-panel{padding:16px;margin-bottom:17px}
+.stories-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}
+.stories-head h3{margin:0;font-size:15px}
+.stories-strip{display:flex;gap:13px;overflow-x:auto;padding:2px 1px 7px}
+.story{min-width:76px;text-align:center;color:#ddd;font-size:11px}
+.story-ring{width:64px;height:64px;border-radius:50%;padding:3px;margin:0 auto 7px;
+background:linear-gradient(135deg,#f1d995,#a97828)}
+.story-inner{height:100%;width:100%;border-radius:50%;background:#211b10;border:3px solid #141414;
+display:grid;place-items:center;color:var(--gold2);font-size:23px;font-weight:bold}
+.story.add .story-ring{background:#30291c}
+.story.add .story-inner{font-size:28px}
+@media(max-width:650px){.cover-art{height:190px}.cover-copy{left:19px;top:27px}
+.profile-meta{left:15px;right:12px;gap:10px;bottom:-57px}
+.profile-photo{width:94px;height:94px;font-size:31px}
+.profile-name h2{font-size:18px}.profile-tag{display:none}.profile-cover{margin-bottom:69px}}
+
 </style>
 </head>
 <body>
@@ -180,10 +219,33 @@ textarea.field{resize:vertical;min-height:115px}
   </aside>
 
   <main>
-    <div class="hero">
-      <h1>Este es tu mundo.</h1>
-      <p>Compartí tus momentos, conocé nuevas personas y hacé crecer tu comunidad. Bienvenido a GOVI.</p>
-    </div>
+    <section class="profile-cover">
+      <div class="cover-art">
+        <div class="cover-copy">
+          <div class="eyebrow">TU MUNDO · TU GENTE · TU ESPACIO</div>
+          <h1>MOMENTOS QUE CONECTAN</h1>
+          <p>Descubrí, compartí y conectá con tu comunidad.</p>
+        </div>
+      </div>
+      <div class="profile-meta">
+        <div class="profile-photo" id="myAvatar">G</div>
+        <div class="profile-name">
+          <h2 id="profileDisplayName">Mi perfil GOVI</h2>
+          <p id="profileHandle">@tucomunidad · Tu espacio empieza aquí</p>
+        </div>
+        <div class="profile-tag">✦ MI COMUNIDAD</div>
+      </div>
+    </section>
+
+    <section class="panel stories-panel">
+      <div class="stories-head"><h3>Historias</h3><span class="muted">Momentos de 24 horas</span></div>
+      <div class="stories-strip">
+        <div class="story add"><div class="story-ring"><div class="story-inner">＋</div></div>Tu historia</div>
+        <div class="story"><div class="story-ring"><div class="story-inner">G</div></div>GOVI</div>
+        <div class="story"><div class="story-ring"><div class="story-inner">✦</div></div>Comunidad</div>
+        <div class="story"><div class="story-ring"><div class="story-inner">♡</div></div>Momentos</div>
+      </div>
+    </section>
 
     <div class="panel">
       <h3 class="section-title">Compartí algo con la comunidad</h3>
