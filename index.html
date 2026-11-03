@@ -195,6 +195,16 @@ display:grid;place-items:center;color:var(--gold2);font-size:23px;font-weight:bo
 .crop-stage{width:min( min(78vw,340px), 340px);height:min(78vw,340px);max-height:340px;margin:14px auto;overflow:hidden;border-radius:50%;background:#080808;border:3px solid #a98235;touch-action:none;position:relative;cursor:grab}
 .crop-stage:active{cursor:grabbing}.crop-stage img{position:absolute;max-width:none;user-select:none;-webkit-user-drag:none;pointer-events:none}
 .crop-controls{display:flex;align-items:center;gap:12px}.crop-controls input{flex:1;accent-color:var(--gold)}
+
+/* Historias funcionales */
+.stories-strip{min-height:100px}
+.story{cursor:pointer}
+.story-ring img,.story-ring video{width:100%;height:100%;object-fit:cover;border-radius:50%;border:3px solid #141414}
+.story-view-media{width:100%;max-height:65vh;object-fit:contain;border-radius:12px;background:#050505}
+.story-view-text{min-height:220px;display:grid;place-items:center;text-align:center;padding:28px;border-radius:14px;background:linear-gradient(145deg,#382a16,#111);font-size:25px;line-height:1.5;font-weight:bold}
+.story-progress{height:3px;background:#40382a;border-radius:4px;overflow:hidden;margin:12px 0}
+.story-progress span{display:block;height:100%;width:100%;background:var(--gold)}
+
 </style>
 </head>
 <body>
@@ -254,12 +264,9 @@ display:grid;place-items:center;color:var(--gold2);font-size:23px;font-weight:bo
     </section>
 
     <section class="panel stories-panel">
-      <div class="stories-head"><h3>Historias</h3><span class="muted">Momentos de 24 horas</span></div>
-      <div class="stories-strip">
-        <div class="story add"><div class="story-ring"><div class="story-inner">＋</div></div>Tu historia</div>
-        <div class="story"><div class="story-ring"><div class="story-inner">G</div></div>GOVI</div>
-        <div class="story"><div class="story-ring"><div class="story-inner">✦</div></div>Comunidad</div>
-        <div class="story"><div class="story-ring"><div class="story-inner">♡</div></div>Momentos</div>
+      <div class="stories-head"><h3>Historias</h3><span class="muted">Desaparecen en 24 horas</span></div>
+      <div class="stories-strip" id="storiesStrip">
+        <div class="story add" onclick="openStoryComposer()"><div class="story-ring"><div class="story-inner">＋</div></div>Tu historia</div>
       </div>
     </section>
 
@@ -329,6 +336,17 @@ display:grid;place-items:center;color:var(--gold2);font-size:23px;font-weight:bo
   </div>
 </div>
 
+<div id="storyComposer" class="modal hidden">
+ <div class="modal-card"><div class="modal-head"><h3>Crear historia</h3><button class="close" onclick="closeStoryComposer()">×</button></div>
+ <textarea id="storyText" class="field" maxlength="500" placeholder="Compartí un momento…"></textarea>
+ <label class="file-label">＋ Foto o vídeo<input id="storyFile" type="file" accept="image/*,video/*"></label>
+ <div id="storyPreview"></div><p id="storyMessage" class="muted"></p>
+ <button class="goldbtn" style="width:100%;margin-top:12px" onclick="publishStory()">Publicar historia</button></div></div>
+<div id="storyViewer" class="modal hidden"><div class="modal-card">
+ <div class="modal-head"><strong id="storyAuthor">Historia</strong><button class="close" onclick="closeStoryViewer()">×</button></div>
+ <div class="story-progress"><span></span></div><div id="storyViewerContent"></div>
+ <p class="muted" id="storyViewerTime"></p></div></div>
+
 <div id="composerModal" class="modal hidden">
   <div class="modal-card">
     <div class="modal-head">
@@ -354,6 +372,9 @@ const db = window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 let currentUser = null;
 let selectedFile = null;
 let profileCache = new Map();
+let selectedStoryFile=null;
+let activeStoryList=[];
+let activeStoryIndex=0;
 let avatarCropFile=null, avatarCropImage=null, cropScale=1, cropX=0, cropY=0, cropBase=1, cropDragging=false, cropPointer=null;
 
 const $ = id => document.getElementById(id);
@@ -428,6 +449,7 @@ async function showApp(){
   $('accountEmail').textContent=currentUser.email || 'Cuenta conectada';
   paintProfile();
   await loadPosts();
+  await loadStories();
 }
 function openProfileEditor(){
   const meta=profileData();
@@ -546,6 +568,102 @@ async function applyAvatarCrop(){
     $('profileMessage').textContent='Foto recortada. Guardá el perfil para conservarla.';
   },'image/jpeg',.9);
 }
+
+
+function openStoryComposer(){
+  $('storyText').value='';$('storyFile').value='';$('storyPreview').innerHTML='';
+  $('storyMessage').textContent='';selectedStoryFile=null;
+  $('storyComposer').classList.remove('hidden');
+}
+function closeStoryComposer(){$('storyComposer').classList.add('hidden');}
+$('storyFile').addEventListener('change',e=>{
+  selectedStoryFile=e.target.files[0]||null;$('storyPreview').innerHTML='';
+  if(!selectedStoryFile)return;
+  if(selectedStoryFile.size>50*1024*1024){selectedStoryFile=null;e.target.value='';$('storyMessage').textContent='El archivo supera 50 MB.';return;}
+  if(!selectedStoryFile.type.startsWith('image/')&&!selectedStoryFile.type.startsWith('video/')){selectedStoryFile=null;e.target.value='';$('storyMessage').textContent='Elegí una foto o un vídeo.';return;}
+  const url=URL.createObjectURL(selectedStoryFile);
+  const el=document.createElement(selectedStoryFile.type.startsWith('video/')?'video':'img');
+  el.src=url;el.style.cssText='width:100%;max-height:220px;object-fit:contain;margin-top:12px;border-radius:10px';
+  if(el.tagName==='VIDEO'){el.controls=true;el.playsInline=true;}
+  $('storyPreview').appendChild(el);
+});
+async function publishStory(){
+  const content=$('storyText').value.trim();
+  if(!content&&!selectedStoryFile){$('storyMessage').textContent='Escribí algo o elegí una foto o vídeo.';return;}
+  $('storyMessage').textContent='Publicando…';
+  let media_url=null,media_type=null;
+  if(selectedStoryFile){
+    const safe=selectedStoryFile.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+    const path=currentUser.id+'/story_'+Date.now()+'_'+safe;
+    const {error:upErr}=await db.storage.from('govi-media').upload(path,selectedStoryFile,{contentType:selectedStoryFile.type,upsert:false});
+    if(upErr){$('storyMessage').textContent='No se pudo subir el archivo: '+upErr.message;return;}
+    media_url=db.storage.from('govi-media').getPublicUrl(path).data.publicUrl;
+    media_type=selectedStoryFile.type.startsWith('video/')?'video':'image';
+  }
+  const {error}=await db.from('stories').insert({user_id:currentUser.id,content,media_url,media_type});
+  if(error){$('storyMessage').textContent='No se pudo publicar: '+error.message;return;}
+  closeStoryComposer();await loadStories();
+}
+async function loadStories(){
+  const strip=$('storiesStrip');if(!strip)return;
+  strip.innerHTML='<div class="story add" onclick="openStoryComposer()"><div class="story-ring"><div class="story-inner">＋</div></div>Tu historia</div>';
+  const {data,error}=await db.from('stories').select('id,user_id,content,media_url,media_type,created_at,expires_at').gt('expires_at',new Date().toISOString()).order('created_at',{ascending:true}).limit(100);
+  if(error){console.warn('Historias no disponibles:',error.message);return;}
+  const ids=[...new Set((data||[]).map(x=>x.user_id))];
+  let profiles=[];
+  if(ids.length){const result=await db.from('profiles').select('id,display_name,username,avatar_url').in('id',ids);if(!result.error)profiles=result.data||[];}
+  const map=new Map(profiles.map(p=>[p.id,p]));
+  const grouped=new Map();
+  for(const story of (data||[])){if(!grouped.has(story.user_id))grouped.set(story.user_id,[]);grouped.get(story.user_id).push(story);}
+  activeStoryList=[];
+  for(const [userId,items] of grouped){
+    const profile=map.get(userId)||{};
+    activeStoryList.push({userId,profile,items});
+    const node=document.createElement('div');node.className='story';
+    const ring=document.createElement('div');ring.className='story-ring';
+    const inner=document.createElement('div');inner.className='story-inner';
+    if(profile.avatar_url){inner.innerHTML='<img src="'+escapeHTML(profile.avatar_url)+'" alt="">';}
+    else inner.textContent=(profile.display_name||'G').trim()[0].toUpperCase();
+    ring.appendChild(inner);
+    const label=document.createElement('div');label.textContent=userId===currentUser.id?'Tu historia':(profile.display_name||'Miembro');
+    node.append(ring,label);node.addEventListener('click',()=>openStoryGroup(userId));strip.appendChild(node);
+  }
+}
+function openStoryGroup(userId){
+  const index=activeStoryList.findIndex(g=>g.userId===userId);if(index<0)return;
+  activeStoryIndex=index;showStoryAt(0);
+}
+function showStoryAt(index){
+  const group=activeStoryList[activeStoryIndex];if(!group)return;
+  const story=group.items[index];if(!story){$('storyViewer').classList.add('hidden');return;}
+  const name=group.profile.display_name||'Miembro de GOVI';
+  $('storyViewer').dataset.index=String(index);
+  $('storyAuthor').textContent=name+(group.profile.username?' · @'+group.profile.username:'');
+  const box=$('storyViewerContent');box.innerHTML='';
+  if(story.media_url){
+    const el=document.createElement(story.media_type==='video'?'video':'img');
+    el.src=story.media_url;el.className='story-view-media';
+    if(el.tagName==='VIDEO'){el.controls=true;el.autoplay=true;el.playsInline=true;}
+    box.appendChild(el);
+  }
+  if(story.content){
+    const text=document.createElement('div');text.className='story-view-text';text.textContent=story.content;box.appendChild(text);
+  }
+  $('storyViewerTime').textContent='Publicado '+new Date(story.created_at).toLocaleString('es-ES')+' · 24 horas';
+  $('storyViewer').classList.remove('hidden');
+  $('storyViewer').onclick=e=>{if(e.target===$('storyViewer'))nextStory();};
+  box.onclick=nextStory;
+}
+function nextStory(){
+  const group=activeStoryList[activeStoryIndex];if(!group)return;
+  const current=group.items.findIndex(x=>x.id===document.querySelector('#storyViewerContent img, #storyViewerContent video')?.dataset.storyId);
+  // Avanzar según el índice visible, guardado en el visor.
+  const next=Number($('storyViewer').dataset.index||0)+1;
+  $('storyViewer').dataset.index=String(next);
+  if(next<group.items.length){showStoryAt(next);}
+  else{$('storyViewer').dataset.index='0';$('storyViewer').classList.add('hidden');}
+}
+function closeStoryViewer(){$('storyViewer').classList.add('hidden');$('storyViewer').dataset.index='0';}
 
 function openComposer(){
   $('composerModal').classList.remove('hidden');
