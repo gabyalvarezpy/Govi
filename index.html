@@ -353,6 +353,7 @@ const db = window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
 let currentUser = null;
 let selectedFile = null;
+let profileCache = new Map();
 let avatarCropFile=null, avatarCropImage=null, cropScale=1, cropX=0, cropY=0, cropBase=1, cropDragging=false, cropPointer=null;
 
 const $ = id => document.getElementById(id);
@@ -469,6 +470,12 @@ async function saveProfile(){
     const {data,error}=await db.auth.updateUser({data:meta});
     if(error)throw error;
     currentUser=data.user || currentUser;
+    const {error:profileError}=await db.from('profiles').upsert({
+      id:currentUser.id,display_name:displayName,
+      username:meta.username,bio,avatar_url:meta.avatar_url || null,
+      cover_url:meta.cover_url || null,updated_at:new Date().toISOString()
+    },{onConflict:'id'});
+    if(profileError)throw profileError;
     paintProfile();
     closeProfileEditor();
   }catch(error){
@@ -652,12 +659,24 @@ async function loadPosts(){
     return;
   }
 
+  profileCache = new Map();
+  const userIds=[...new Set(data.map(post=>post.user_id).filter(Boolean))];
+  if(userIds.length){
+    const {data:profiles,error:profilesError}=await db.from('profiles')
+      .select('id,display_name,username,avatar_url')
+      .in('id',userIds);
+    if(!profilesError){
+      for(const profile of (profiles || []))profileCache.set(profile.id,profile);
+    }else{
+      console.warn('No se pudieron cargar los perfiles públicos:',profilesError.message);
+    }
+  }
   for(const post of data){
-    feed.appendChild(await createPostCard(post));
+    feed.appendChild(await createPostCard(post,profileCache.get(post.user_id)));
   }
 }
 
-async function createPostCard(post){
+async function createPostCard(post,authorProfile){
   const card=document.createElement('article');
   card.className='post';
 
@@ -669,11 +688,16 @@ async function createPostCard(post){
       : `<img class="post-media" src="${escapeHTML(post.media_url)}" alt="Imagen compartida">`;
   }
 
+  const ownPost=post.user_id===currentUser.id;
+  const ownMeta=ownPost?profileData():{};
+  const authorName=authorProfile?.display_name || (ownPost?(ownMeta.display_name || currentUser.email?.split('@')[0]):'Miembro de GOVI');
+  const authorAvatar=authorProfile?.avatar_url || (ownPost?ownMeta.avatar_url:null);
+  const authorHandle=authorProfile?.username || (ownPost?ownMeta.username:null);
   card.innerHTML=`
     <div class="post-head">
-      <div class="avatar">G</div>
+      <div class="avatar" style="${authorAvatar?'background-image:url(&quot;'+escapeHTML(authorAvatar)+'&quot;);':''}">${authorAvatar?'':escapeHTML((authorName.trim()[0]||'G').toUpperCase())}</div>
       <div>
-        <div class="post-name">${post.user_id===currentUser.id?'Tu publicación':'Miembro de GOVI'}</div>
+        <div class="post-name">${escapeHTML(authorName)}${authorHandle?' <span class="muted">@'+escapeHTML(authorHandle)+'</span>':''}</div>
         <div class="post-date">${escapeHTML(new Date(post.created_at).toLocaleString('es-ES'))} · Público</div>
       </div>
     </div>
