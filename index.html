@@ -179,6 +179,17 @@ display:grid;place-items:center;color:var(--gold2);font-size:23px;font-weight:bo
 .profile-photo{width:94px;height:94px;font-size:31px}
 .profile-name h2{font-size:18px}.profile-tag{display:none}.profile-cover{margin-bottom:69px}}
 
+
+.profile-edit-btn{background:#17140e;color:var(--gold2);border:1px solid #72592b;border-radius:10px;padding:10px 13px;font-size:12px;font-weight:bold;margin-left:auto;margin-bottom:8px}
+.profile-bio{font-size:12px;color:#b9ae98;margin-top:5px;max-width:420px;overflow-wrap:anywhere}
+.profile-photo{background-size:cover;background-position:center}
+.avatar{background-size:cover;background-position:center}
+.cover-art.has-image{background-size:cover;background-position:center}
+.cover-art.has-image:before{background:linear-gradient(90deg,#080808d9,transparent 90%)}
+.profile-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.profile-help{font-size:12px;color:var(--muted);line-height:1.5}
+@media(max-width:650px){.profile-form-grid{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -231,9 +242,9 @@ display:grid;place-items:center;color:var(--gold2);font-size:23px;font-weight:bo
         <div class="profile-photo" id="myAvatar">G</div>
         <div class="profile-name">
           <h2 id="profileDisplayName">Mi perfil GOVI</h2>
-          <p id="profileHandle">@tucomunidad · Tu espacio empieza aquí</p>
+          <p id="profileHandle">@tucomunidad</p><div class="profile-bio" id="profileBio"></div>
         </div>
-        <div class="profile-tag">✦ MI COMUNIDAD</div>
+        <button class="profile-edit-btn" onclick="openProfileEditor()">Editar perfil</button>
       </div>
     </section>
 
@@ -250,7 +261,7 @@ display:grid;place-items:center;color:var(--gold2);font-size:23px;font-weight:bo
     <div class="panel">
       <h3 class="section-title">Compartí algo con la comunidad</h3>
       <div class="composer-row">
-        <div class="avatar" id="myAvatar">G</div>
+        <div class="avatar" id="composerAvatar">G</div>
         <button class="composer-trigger" onclick="openComposer()">¿Qué querés compartir hoy?</button>
       </div>
       <div class="quick-actions">
@@ -279,6 +290,26 @@ display:grid;place-items:center;color:var(--gold2);font-size:23px;font-weight:bo
     </div>
     <p class="footer-note">GOVI · Tu mundo, tu comunidad.</p>
   </aside>
+</div>
+
+ 
+<div id="profileModal" class="modal hidden">
+  <div class="modal-card">
+    <div class="modal-head"><h3>Personalizá tu perfil</h3><button class="close" onclick="closeProfileEditor()">×</button></div>
+    <p class="profile-help">Tu nombre, foto y presentación aparecerán en tu espacio GOVI. Los cambios se guardan en tu cuenta.</p>
+    <label class="muted">Nombre visible</label>
+    <input id="editDisplayName" class="field" maxlength="40" placeholder="Tu nombre">
+    <label class="muted">Nombre de usuario</label>
+    <input id="editUsername" class="field" maxlength="24" placeholder="tunombre">
+    <label class="muted">Presentación</label>
+    <textarea id="editBio" class="field" maxlength="160" placeholder="Contale a la comunidad quién sos…"></textarea>
+    <div class="profile-form-grid">
+      <div><label class="muted">Foto de perfil</label><input id="avatarUpload" class="field" type="file" accept="image/*"></div>
+      <div><label class="muted">Portada</label><input id="coverUpload" class="field" type="file" accept="image/*"></div>
+    </div>
+    <p id="profileMessage" class="muted"></p>
+    <button class="goldbtn" style="width:100%;margin-top:10px" onclick="saveProfile()">Guardar perfil</button>
+  </div>
 </div>
 
 <div id="composerModal" class="modal hidden">
@@ -347,12 +378,83 @@ async function signOut(){
   $('auth').classList.remove('hidden');
 }
 
+function profileData(){
+  return currentUser?.user_metadata || {};
+}
+function paintProfile(){
+  const meta=profileData();
+  const name=meta.display_name || currentUser.email?.split('@')[0] || 'Mi perfil GOVI';
+  const username=meta.username || name.toLowerCase().replace(/[^a-z0-9_]/g,'').slice(0,24) || 'usuario';
+  $('profileDisplayName').textContent=name;
+  $('profileHandle').textContent='@'+username;
+  $('profileBio').textContent=meta.bio || 'Tu espacio empieza aquí. Compartí tus momentos con GOVI.';
+  const initial=(name.trim()[0] || 'G').toUpperCase();
+  for(const id of ['myAvatar','composerAvatar']){
+    const node=$(id);
+    if(!node)continue;
+    node.textContent=meta.avatar_url?'':initial;
+    node.style.backgroundImage=meta.avatar_url?'url("'+meta.avatar_url.replace(/"/g,'%22')+'")':'';
+  }
+  if(meta.cover_url){
+    document.querySelector('.cover-art').classList.add('has-image');
+    document.querySelector('.cover-art').style.backgroundImage='url("'+meta.cover_url.replace(/"/g,'%22')+'")';
+  }else{
+    document.querySelector('.cover-art').classList.remove('has-image');
+    document.querySelector('.cover-art').style.backgroundImage='';
+  }
+}
 async function showApp(){
   $('auth').classList.add('hidden');
   $('app').classList.remove('hidden');
   $('accountEmail').textContent=currentUser.email || 'Cuenta conectada';
-  $('myAvatar').textContent=(currentUser.email || 'G').charAt(0).toUpperCase();
+  paintProfile();
   await loadPosts();
+}
+function openProfileEditor(){
+  const meta=profileData();
+  $('editDisplayName').value=meta.display_name || currentUser.email?.split('@')[0] || '';
+  $('editUsername').value=meta.username || '';
+  $('editBio').value=meta.bio || '';
+  $('avatarUpload').value='';
+  $('coverUpload').value='';
+  $('profileMessage').textContent='';
+  $('profileModal').classList.remove('hidden');
+}
+function closeProfileEditor(){$('profileModal').classList.add('hidden');}
+async function uploadProfileImage(file,kind){
+  if(!file)return null;
+  if(!file.type.startsWith('image/'))throw new Error('Elegí un archivo de imagen.');
+  if(file.size>8*1024*1024)throw new Error('Cada imagen debe pesar menos de 8 MB.');
+  const ext=(file.name.split('.').pop() || 'jpg').replace(/[^a-z0-9]/gi,'').toLowerCase();
+  const path=currentUser.id+'/profile_'+kind+'_'+Date.now()+'.'+ext;
+  const {error}=await db.storage.from('govi-media').upload(path,file,{contentType:file.type,upsert:false});
+  if(error)throw error;
+  return db.storage.from('govi-media').getPublicUrl(path).data.publicUrl;
+}
+async function saveProfile(){
+  const displayName=$('editDisplayName').value.trim();
+  const username=$('editUsername').value.trim().toLowerCase().replace(/^@/,'');
+  const bio=$('editBio').value.trim();
+  if(!displayName){$('profileMessage').textContent='Escribí tu nombre visible.';return;}
+  if(username && !/^[a-z0-9_]{3,24}$/.test(username)){
+    $('profileMessage').textContent='El usuario debe tener entre 3 y 24 caracteres: letras, números o guion bajo.';
+    return;
+  }
+  $('profileMessage').textContent='Guardando tu perfil…';
+  try{
+    const meta={...profileData(),display_name:displayName,username:username || displayName.toLowerCase().replace(/[^a-z0-9_]/g,'').slice(0,24),bio};
+    const avatar=await uploadProfileImage($('avatarUpload').files[0],'avatar');
+    const cover=await uploadProfileImage($('coverUpload').files[0],'cover');
+    if(avatar)meta.avatar_url=avatar;
+    if(cover)meta.cover_url=cover;
+    const {data,error}=await db.auth.updateUser({data:meta});
+    if(error)throw error;
+    currentUser=data.user || currentUser;
+    paintProfile();
+    closeProfileEditor();
+  }catch(error){
+    $('profileMessage').textContent='No se pudo guardar: '+error.message;
+  }
 }
 
 function openComposer(){
